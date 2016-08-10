@@ -29,7 +29,6 @@ Route::group([], function(){
 });
 
 //Callback atos
-
 Route::group([], function(){
     Route::get('/atos/callback', ['as'=> 'callback.atos', 'uses' => 'CallbackController@handleAtosCallback']);
     Route::post('/atos/callback', ['as'=> 'callback.atos', 'uses' => 'CallbackController@handleAtosCallback']);
