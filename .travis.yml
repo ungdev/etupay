@@ -1,0 +1,32 @@
+language: php
+sudo: false
+services:
+- mysql
+php:
+- 7.0
+matrix:
+  fast_finish: true
+  allow_failures:
+  - php: nightly
+cache:
+  directories:
+  - vendor
+  - $HOME/.composer/cache
+before_script:
+- cp .env.test .env
+- composer self-update
+- composer install --ignore-platform-reqs --no-interaction --prefer-dist
+- php artisan key:generate
+- mysql -e 'create database sherlock;'
+- php artisan migrate
+script:
+- phpunit
+notifications:
+  webhooks:
+    urls:
+    - https://bde.utt.fr/pay/deploy
+    on_failure: never
+    on_start: never
+    on_pull_requests: false
+  slack:
+    secure: NnobKhi3hlQFE/clMyoaiqnwjuglJth4Smgzw/PsCF3ceCq4i87RV5OGh/fwglPmAEtPOv9CusUkl/JMcaKUvbg9B7vsqu6U7iYMRWyoOAGEr+LNTfOj+iDvBVyKGYXG2Bp8eZZ3OQlX6qkxQbCUTPe/7eEAC9U/N1JGdrOlYjWR/V2Pqq47CMa+4rmaKGRJFsou41YBbwW00btQYu8QhUZ2aB/hbb5IWW8UZwEiTv7knYEkgK4vmzwMsob/DKCwPXjK4yoJJ11ivKLAtGGUVPaeurCmJbPZXP07MqKxOKbo4Ei1DptmgOgICxm7TxVga0ZL8u347whMzSrdFMTHclDsffsPb6l1XveZs8tohqZbVBfHeVTlg9Pud/Hl4xqvmIQicTD654hdjeodYo2h6PL4TXC96fvWCQL4OtLvZ0mraptDbE1jsvxyw5+StGuC7lA1fn2li9Hfhq1gNpIk3hsotQUB6Jd7hV3VsmZOaWnpPBwHfmu60MXhkRuoZmPrexrl4t5HxO+nLtqaJlURoXc/x+GjUY5IsyNlRc/Tn++6bSD64cvpJ31VlT7BaZr5L9iJtNy2mvS/uzPWNPdHUlJ3H9CSgNy6z+2THMNpygdeWJsc2shwU6O7FnIm0PjS0a4l6GJ5+61qSVriA3q4Gz/h7q9rnU3IueHxAWU/x6I=
