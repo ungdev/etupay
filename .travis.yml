@@ -24,7 +24,7 @@ script:
 notifications:
   webhooks:
     urls:
-    - https://bde.utt.fr/pay/deploy
+    - https://pay.uttnetgroup.fr/deploy
     on_failure: never
     on_start: never
     on_pull_requests: false
