@@ -11,6 +11,7 @@ Homestead.json
 
 # Laravel 5 & Lumen specific
 bootstrap/cache/
+!bootstrap/cache/.gitkeep
 .env.*.php
 .env.php
 
