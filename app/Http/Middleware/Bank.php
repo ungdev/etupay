@@ -23,7 +23,7 @@ class Bank
     
     private function isIpAllowed()
     {
-        $ip = getRealUserIp();
+        $ip = $this->getRealUserIp();
         $ranges = explode(',', getenv('BANK_IP_RANGE'));
         foreach ($ranges as $range)
         {
@@ -47,7 +47,7 @@ class Bank
         return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
     }
 
-    function getRealUserIp(){
+    private function getRealUserIp(){
         if($_SERVER['REMOTE_ADDR'] != '10.0.150.1')
             return $_SERVER['REMOTE_ADDR'];
 
