@@ -23,7 +23,7 @@ class Bank
     
     private function isIpAllowed()
     {
-        $ip = Request::getClientIp();
+        $ip = getRealUserIp();
         $ranges = explode(',', getenv('BANK_IP_RANGE'));
         foreach ($ranges as $range)
         {
@@ -45,5 +45,17 @@ class Bank
         $wildcard_decimal = pow( 2, ( 32 - $netmask ) ) - 1;
         $netmask_decimal = ~ $wildcard_decimal;
         return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
+    }
+
+    function getRealUserIp(){
+        if($_SERVER['REMOTE_ADDR'] != '10.0.150.1')
+            return $_SERVER['REMOTE_ADDR'];
+
+        switch(true){
+            case (!empty($_SERVER['HTTP_X_REAL_IP'])) : return $_SERVER['HTTP_X_REAL_IP'];
+            case (!empty($_SERVER['HTTP_CLIENT_IP'])) : return $_SERVER['HTTP_CLIENT_IP'];
+            case (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) : return $_SERVER['HTTP_X_FORWARDED_FOR'];
+            default : return $_SERVER['REMOTE_ADDR'];
+        }
     }
 }
