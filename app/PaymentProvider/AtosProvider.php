@@ -66,7 +66,7 @@ class AtosProvider implements PaymentGateway
         $req = $request->requestDoCheckoutPayment($encryptedData);
 
         if($req->isSuccess())
-            if($transaction = Transaction::find($req->caddie))
+            if($transaction = Transaction::find($req->body->get('caddie')))
             {
                 $transaction->data = json_encode($req->body->all());
                 $transaction->bank_transaction_id = $req->body->get('transaction_id');
