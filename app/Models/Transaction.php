@@ -9,6 +9,24 @@ class Transaction extends Model
     protected $table = 'transactions';
 
 
+    public function callbackAccepted()
+    {
+        $this->step = 'PAID';
+        $this->save();
+    }
+
+    public function callbackRefused()
+    {
+        $this->step = 'REFUSED';
+        $this->save();
+    }
+
+    public function callbackCanceled()
+    {
+        $this->step = 'CANCELED';
+        $this->save();
+    }
+
     public function service()
     {
         return $this->hasOne('App\Service');

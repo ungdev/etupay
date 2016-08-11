@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\Config;
 
 use App\Classes\AtosRequest;
+use Illuminate\Support\Facades\Log;
 
 class AtosProvider implements PaymentGateway
 {
@@ -57,5 +58,46 @@ class AtosProvider implements PaymentGateway
 
         $request = new AtosRequest(Config::get('payment.atos.merchand_id'), 'fr', Config::get('payment.atos.pathfile'), Config::get('payment.atos.requestPath'), Config::get('payment.atos.responsePath'), Config::get('payment.atos.isDebug'));
         return $request->requestGetCheckoutToken($transaction->amount, Config::get('atos.currencies'), $transaction->getAtosParameter());
+    }
+
+    public function processCallback($encryptedData)
+    {
+        $request = new AtosRequest(Config::get('payment.atos.merchand_id'), 'fr', Config::get('payment.atos.pathfile'), Config::get('payment.atos.requestPath'), Config::get('payment.atos.responsePath'), Config::get('payment.atos.isDebug'));
+        $req = $request->requestDoCheckoutPayment($encryptedData);
+
+        if($req->isSuccess())
+            if($transaction = Transaction::find($req->caddie))
+            {
+                $transaction->data = json_encode($req->body->all());
+                $transaction->bank_transaction_id = $req->body->get('transaction_id');
+
+                if($req->body->get('amount') != $transaction->amount)
+                {
+                    throw new \Exception('Discordance in transaction amount');
+                    $transaction->save();
+                    Log::critical('Discordance in transaction amout '.$transaction->id);
+                    return false;
+                }
+                switch ($transaction->body->get('response_code'))
+                {
+                    case '00': // Accepted
+                        $transaction->callbackAccepted();
+                        break;
+
+                    case '05': //Refused
+                        $transaction->callbackRefused();
+                        break;
+
+                    case '17': // Canceled
+                        $transaction->callbackCanceled();
+                        break;
+                    default:
+                        Log::warning('Inconnu atos return code. '.$transaction->id);
+
+                }
+
+                $transaction->save();
+                return $transaction;
+            }
     }
 }

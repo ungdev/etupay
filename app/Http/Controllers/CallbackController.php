@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\PaymentProvider\AtosProvider;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -13,5 +14,7 @@ class CallbackController extends Controller
     {
 
         Log::critical(json_encode($request->all()));
+        $provider = new AtosProvider();
+        dd($provider->processCallback($request->input('DATA')));
     }
 }
