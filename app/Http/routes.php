@@ -16,9 +16,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// CallBack ATOS
 Route::group(['middleware' => 'bank'], function(){
-    Route::get('/test', ['as'=> 'payment.request', 'uses' => 'TransactionRequest@testRequest']);
+    Route::get('/atos/callback', ['as'=> 'callback.atos', 'uses' => 'CallbackController@handleAtosCallback']);
+    Route::post('/atos/callback', ['as'=> 'callback.atos', 'uses' => 'CallbackController@handleAtosCallback']);
 });
+
 
 Route::group([], function(){
     Route::get('/transaction/{InitialisedTransaction}', ['as'=> 'userFrontend.choose', 'uses' => 'UserFrontend@paymentGatewayChoice']);
@@ -28,11 +31,7 @@ Route::group([], function(){
     Route::post('/requete', ['as'=> 'payment.request', 'uses' => 'TransactionRequest@testDecrypt']);
 });
 
-//Callback atos
-Route::group([], function(){
-    Route::get('/atos/callback', ['as'=> 'callback.atos', 'uses' => 'CallbackController@handleAtosCallback']);
-    Route::post('/atos/callback', ['as'=> 'callback.atos', 'uses' => 'CallbackController@handleAtosCallback']);
-});
+
 
 Route::bind('InitialisedTransaction', function ($id){
     $transaction = \App\Models\Transaction::where('id', $id)->where('step', 'INITIALISED')->first();

@@ -12,6 +12,7 @@ class UserFrontend extends Controller
     public function paymentGatewayChoice(Request $request, Transaction $transaction)
     {
         $gws = $this->getPaymentGateway($transaction);
+        echo $request->getClientIp();
         foreach ($gws as $gw)
         {
             echo $gw->getChoosePage($transaction);

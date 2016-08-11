@@ -55,7 +55,7 @@ class Transaction extends Model
         switch ($attributes->type)
         {
             case 'PAYMENT':
-                $model = new ImmediateTransaction;
+                $model = new ImmediateTransaction([], true);
                 break;
 
             default:
@@ -66,7 +66,14 @@ class Transaction extends Model
 
         $model->setConnection($connection ?: $this->connection);
 
+        $model->checkExistence();
         return $model;
+    }
+
+    public function checkExistence()
+    {
+        if($this->attributes['id'])
+            $this->exists = true;
     }
 
 
