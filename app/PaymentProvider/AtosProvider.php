@@ -78,7 +78,7 @@ class AtosProvider implements PaymentGateway
                     Log::critical('Discordance in transaction amout '.$transaction->id);
                     return false;
                 }
-                switch ($transaction->body->get('response_code'))
+                switch ($req->body->get('response_code'))
                 {
                     case '00': // Accepted
                         $transaction->callbackAccepted();
