@@ -32,7 +32,6 @@ class TransactionNotify extends Job implements ShouldQueue
     public function handle(Transaction $transaction)
     {
         //Notify Serveur
-        dispatch(new TransactionClientNotify($transaction));
         $this->sendMailNotification();
 
     }

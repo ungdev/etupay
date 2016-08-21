@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\TransactionClientNotify;
 use App\Jobs\TransactionNotify;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,7 @@ class Transaction extends Model
         $this->save();
 
         dispatch(new TransactionNotify($this));
+        dispatch(new TransactionClientNotify($this));
     }
 
     public function callbackRefused()
@@ -24,6 +26,7 @@ class Transaction extends Model
         $this->save();
 
         dispatch(new TransactionNotify($this));
+        dispatch(new TransactionClientNotify($this));
     }
 
     public function callbackCanceled()
@@ -32,6 +35,7 @@ class Transaction extends Model
         $this->save();
 
         dispatch(new TransactionNotify($this));
+        dispatch(new TransactionClientNotify($this));
     }
 
     public function service()
