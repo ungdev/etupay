@@ -36,6 +36,7 @@ class TransactionClientNotify extends Job implements ShouldQueue
     public function handle(Transaction $transaction)
     {
 
+        $transaction = $this->transaction;
         // On fait la transaction
         Log::info('New Client notify request');
         $client  = new Client();

@@ -106,6 +106,7 @@ class AtosProvider implements PaymentGateway
                     case '17': // Canceled
                         $transaction->callbackCanceled();
                         break;
+
                     default:
                         Log::warning('Inconnu atos return code. '.$transaction->id);
 
