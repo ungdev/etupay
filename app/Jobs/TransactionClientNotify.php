@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class TransactionClientNotify extends Job implements ShouldQueue
 {
@@ -34,6 +35,7 @@ class TransactionClientNotify extends Job implements ShouldQueue
     public function handle(Transaction $transaction)
     {
         // On fait la transaction
+        Log::info('New Client notify request');
         $client  = new Client();
         $res = $client->request('POST',$transaction->service->callback_url,[
             'payload' => PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn()),
