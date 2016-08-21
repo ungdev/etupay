@@ -14,7 +14,7 @@ Variable requise:
     -> payload: base64(AES-256-CBC(key_Service,json(parametres))
     
 Parametres:
--> action: "Checkout"
+-> action: "checkout"
 -> amount: Montant en centime d'euros
 -> description: (optionnel) Description de la transaction: serat présent sur la facture et le ticket du client
 -> client_mail: (optionnel) Adresse mail du client, permet l'envoi automatique du ticket de transaction ainsi que la facture PDF (?option)
@@ -39,7 +39,7 @@ Parametres:
 
 -> transaction_id
 -> amount
--> type ['PAYMENT', 'AUTHORISATION']
+-> type ['CHECKOUT', 'AUTHORISATION']
 -> step ['INITIALISED', 'PAID', 'REFUSED', 'REFUNDED', 'AUTHORISATION', 'CANCELED']
 -> service_data
 

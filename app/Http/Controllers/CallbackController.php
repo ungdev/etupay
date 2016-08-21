@@ -12,8 +12,13 @@ class CallbackController extends Controller
 {
     public function handleAtosCallback(Request $request)
     {
-        Log::critical(json_encode($request->all()));
+        //Log::critical(json_encode($request->all()));
         $provider = new AtosProvider();
         $provider->processCallback($request->input('DATA'));
+    }
+
+    public function testCallback(Request $request)
+    {
+        Log::critical(json_encode($request->all()));
     }
 }

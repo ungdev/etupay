@@ -64,9 +64,9 @@ class AtosRequest
             "pathfile"          => $this->pathfile,
             "amount"            => $amount,
             "currency_code"     => $this->getCurrencyCode($currency),
-            "automatic_response_url" => Config::get('payment.atos.callback_url'),
-            "cancel_return_url" => Config::get('payment.atos.cancel_url'),
-            "normal_return_url" => Config::get('payment.atos.return_url'),
+            "automatic_response_url" => url()->route('callback.atos'),
+            "cancel_return_url" => url()->route('return.atos'),
+            "normal_return_url" => url()->route('return.atos'),
         )));
     }
     /**

@@ -20,12 +20,12 @@ class Service extends Model
 
     public function fundation()
     {
-        return $this->hasOne('App\Fundation');
+        return $this->hasOne('App\Models\Fundation');
     }
 
     public function transactions()
     {
-        return $this->hasMany('App\Transaction');
+        return $this->hasMany('App\Models\Transaction');
     }
 
     public function generateApiKey()

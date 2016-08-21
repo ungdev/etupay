@@ -42,6 +42,11 @@ class PaymentLoader
 
         return $transaction;
     }
+    public function encryptFromService(Service $service, array $data)
+    {
+        $key = $service->api_key;
+        return $this->encrypt($key, $data);
+    }
 
     public function decrypt($key, $payload)
     {

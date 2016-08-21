@@ -2,34 +2,41 @@
 
 namespace App\Models;
 
+use App\Jobs\TransactionNotify;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
     protected $table = 'transactions';
-
+    protected $type = 'default';
 
     public function callbackAccepted()
     {
         $this->step = 'PAID';
         $this->save();
+
+        dispatch(new TransactionNotify($this));
     }
 
     public function callbackRefused()
     {
         $this->step = 'REFUSED';
         $this->save();
+
+        dispatch(new TransactionNotify($this));
     }
 
     public function callbackCanceled()
     {
         $this->step = 'CANCELED';
         $this->save();
+
+        dispatch(new TransactionNotify($this));
     }
 
     public function service()
     {
-        return $this->hasOne('App\Service');
+        return $this->hasOne('App\Models\Service', 'id', 'service_id');
     }
 
     public function bind($data)
@@ -47,6 +54,17 @@ class Transaction extends Model
             'customer_email' => $this->attributes['client_mail'],
             'capture_day' => $this->attributes['capture_day'],
             'caddie' => $this->attributes['id'],
+        ];
+    }
+
+    public function callbackReturn()
+    {
+        return [
+            'transaction_id' => $this->id,
+            'type' => $this->getType(),
+            'amount' => $this->amount,
+            'service_data' => $this->service_data,
+            'step' => $this->step,
         ];
     }
 
@@ -70,6 +88,10 @@ class Transaction extends Model
         return $model;
     }
 
+    public function getType()
+    {
+        return $this->type;
+    }
     public function checkExistence()
     {
         if($this->attributes['id'])

@@ -21,7 +21,7 @@ class TransactionRequest extends Controller
 
     }
 
-    public function testDecrypt(PaymentRequest $request)
+    public function incomming(PaymentRequest $request)
     {
          $request->Transaction->save();
         return redirect()->route('userFrontend.choose', $request->Transaction);

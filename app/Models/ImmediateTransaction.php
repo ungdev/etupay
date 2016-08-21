@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Classes\AtosRequest;
 class ImmediateTransaction extends Transaction
 {
+    protected $type = 'checkout';
 
     public function bind($data)
     {

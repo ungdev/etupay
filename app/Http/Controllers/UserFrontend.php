@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\PaymentProvider\AtosProvider;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -19,8 +20,18 @@ class UserFrontend extends Controller
         }
     }
 
+    public function atosCallback(Request $request)
+    {
+        $provider = new AtosProvider();
+        if($transaction = $provider->getTransactionFromCallback($request->input('DATA')))
+        {
+            return redirect($transaction->service->return_url);
+        }
+    }
+
     protected function getPaymentGateway(Transaction $transaction)
     {
+        //$transaction->callbackAccepted();
         $providers = [];
         foreach (config('payment.gateway') as $gateway)
         {
