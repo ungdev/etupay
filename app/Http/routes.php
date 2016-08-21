@@ -25,8 +25,8 @@ Route::group(['middleware' => 'bank'], function(){
 
 Route::group([], function(){
     Route::get('/transaction/{InitialisedTransaction}', ['as'=> 'userFrontend.choose', 'uses' => 'UserFrontend@paymentGatewayChoice']);
-    Route::get('/atos/return', ['as'=> 'return.atos', 'uses' => 'userFrontend@atosCallback']);
-    Route::post('/atos/return', ['as'=> 'return.atos', 'uses' => 'userFrontend@atosCallback']);
+    Route::get('/atos/return', ['as'=> 'return.atos', 'uses' => 'UserFrontend@atosCallback']);
+    Route::post('/atos/return', ['as'=> 'return.atos', 'uses' => 'UserFrontend@atosCallback']);
 
     Route::post('/callback', ['as'=> 'callback.test', 'uses' => 'CallbackController@testCallback']);
     Route::get('/callback', ['as'=> 'callback.test', 'uses' => 'CallbackController@testCallback']);
