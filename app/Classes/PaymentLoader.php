@@ -60,7 +60,7 @@ class PaymentLoader
     public function encrypt($key, array $data)
     {
         $crypt = new Encrypter(base64_decode($key), 'AES-256-CBC');
-        return base64_encode($crypt->encrypt(json_encode($data)));
+        return $crypt->encrypt(json_encode($data));
     }
 
     protected function checkKey(string $key)
