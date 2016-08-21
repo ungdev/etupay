@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\PaymentProvider\AtosProvider;
 use Illuminate\Http\Request;
-
+use App\Facades\PaymentLoader;
 use App\Http\Requests;
 
 class UserFrontend extends Controller
