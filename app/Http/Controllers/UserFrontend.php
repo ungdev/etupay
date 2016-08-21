@@ -23,7 +23,8 @@ class UserFrontend extends Controller
     public function atosCallback(Request $request)
     {
         $provider = new AtosProvider();
-        if($transaction = $provider->getTransactionFromCallback($request->input('DATA')))
+        //if($transaction = $provider->getTransactionFromCallback($request->input('DATA')))
+        if($transaction = $provider->processCallback($request->input('DATA')))
         {
             $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
             return redirect($transaction->service->return_url.'?payload='.$payload);
