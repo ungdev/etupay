@@ -72,7 +72,7 @@ class Transaction extends Model
             if ($total != $this->attributes['amount'])
                 throw new \Exception('Invalid total amount.');
             else
-                $this->attributes['articles'] = $articles;
+                $this->articles = $articles;
         }
     }
 
