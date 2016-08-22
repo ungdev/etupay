@@ -79,8 +79,7 @@ class AtosProvider implements PaymentGateway
                 if($transaction->step != 'INITIALISED')
                 {
                     Log::error('Transaction '.$transaction->id.' already processed. ABORDING');
-                    throw new \Exception("Transaction already processed");
-                    return false;
+                    return $transaction;
                 }
                 $transaction->data = json_encode($req->body->all());
                 $transaction->bank_transaction_id = $req->body->get('transaction_id');
