@@ -14,10 +14,14 @@ class ImmediateTransaction extends Transaction
         $this->attributes['type'] = 'PAYMENT';
         $this->attributes['capture_day'] = 0;
     }
+
     public function getAtosParameter()
     {
-        $param = [];
-        return array_merge(parent::getAtosParameter(), $param);
+        return [
+            'customer_email' => $this->attributes['client_mail'],
+            'capture_day' => $this->attributes['capture_day'],
+            'caddie' => $this->attributes['id'],
+        ];
     }
 
     protected static function boot()

@@ -10,6 +10,9 @@ class Transaction extends Model
 {
     protected $table = 'transactions';
     protected $type = 'default';
+    protected $casts = [
+        'articles' => 'array',
+    ];
 
     public function callbackAccepted()
     {
@@ -46,20 +49,32 @@ class Transaction extends Model
     public function bind($data)
     {
         $data = (array) $data;
-        $this->attributes['amount'] = $data['amount'];
+        $this->attributes['amount'] = intval($data['amount']);
         $this->attributes['description'] = (isset($data['description']) ? $data['description'] : null);
         $this->attributes['client_mail'] = (isset($data['client_mail']) ? $data['client_mail'] : null);
         $this->attributes['service_data'] = (isset($data['service_data']) ? $data['service_data'] : null);
+
+        if(isset($data['articles']) && is_array($data['articles']))
+        {
+            $articles = [];
+            $total = 0;
+            foreach ($data['articles'] as $article)
+            {
+                $articles[] = [
+                    'name' => $article['name'],
+                    'price' => intval($article['price']),
+                    'qty' => intval($article['quantity'])
+                ];
+                $total += intval($article['price']) * intval($article['quantity']);
+            }
+
+            if ($total != $this->attributes['amount'])
+                throw new \Exception('Invalid total amount.');
+            else
+                $this->attributes['articles'] = $articles;
+        }
     }
 
-    public function getAtosParameter()
-    {
-        return [
-            'customer_email' => $this->attributes['client_mail'],
-            'capture_day' => $this->attributes['capture_day'],
-            'caddie' => $this->attributes['id'],
-        ];
-    }
 
     public function callbackReturn()
     {
@@ -78,6 +93,10 @@ class Transaction extends Model
         {
             case 'PAYMENT':
                 $model = new ImmediateTransaction([], true);
+                break;
+
+            case 'AUTHORISATION':
+                $model = new AuthorisationTransaction([], true);
                 break;
 
             default:

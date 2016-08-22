@@ -100,6 +100,13 @@ class AtosProvider implements PaymentGateway
                         break;
 
                     case '05': //Refused
+                    case '02':
+                    case '03':
+                    case '12':
+                    case '30':
+                    case '34':
+                    case '90':
+                    case '75':
                         $transaction->callbackRefused();
                         break;
 
@@ -108,7 +115,8 @@ class AtosProvider implements PaymentGateway
                         break;
 
                     default:
-                        Log::warning('Inconnu atos return code. '.$transaction->id);
+                        $transaction->callbackCanceled();
+                        Log::warning('Inconnu atos return code. '.$transaction->id. 'code: '.$req->body->get('response_code'));
 
                 }
 

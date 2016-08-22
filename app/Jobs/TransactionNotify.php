@@ -46,6 +46,9 @@ class TransactionNotify extends Job implements ShouldQueue
             case 'PAID':
                 break;
 
+            case 'AUTHORISATION':
+                break;
+
             case 'REFUSED':
                 break;
 

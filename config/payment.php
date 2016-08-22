@@ -16,6 +16,7 @@ return [
                 ],
     'gateway' => [
         \App\PaymentProvider\AtosProvider::class,
+        \App\PaymentProvider\PaypalProvider::class,
     ],
 
 ];
