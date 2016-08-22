@@ -60,6 +60,7 @@ class Transaction extends Model
             $total = 0;
             foreach ($data['articles'] as $article)
             {
+                $article = (array) $article;
                 $articles[] = [
                     'name' => $article['name'],
                     'price' => intval($article['price']),
