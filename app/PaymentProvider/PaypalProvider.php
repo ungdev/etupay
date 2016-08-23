@@ -39,7 +39,8 @@ class PaypalProvider implements PaymentGateway
 
     public function getChoosePage(Transaction $transaction)
     {
-        return route('userFrontend.paypalRedirect', ['InitialisedTransaction' => $transaction]);
+        //return route('userFrontend.paypalRedirect', ['InitialisedTransaction' => $transaction]);
+        return view('gateways.paypal.basket', ['url' => route('userFrontend.paypalRedirect', ['InitialisedTransaction' => $transaction])]);
     }
 
     public function processCallback(Request $request)

@@ -25,7 +25,7 @@ class AtosProvider implements PaymentGateway
     {
         $req = $this->doAtosRequest($transaction);
         if($req->isSuccess())
-            return $req->body->get('message');
+            return view('gateways.atos.basket', ['bank_content' => $req->body->get('message')]);
         else return null;
 
         //TODO: Implément error reporting
@@ -51,13 +51,11 @@ class AtosProvider implements PaymentGateway
     protected function doAtosRequest(Transaction $transaction)
     {
         $parameters = [
-            'customer_email' => $transaction->client_mail,
-            'capture_day' => $transaction->capture_day,
-            'caddie' => $transaction->id,
+            'header_flag' => 'yes',
         ];
-
+        $parameters = array_merge($parameters, $transaction->getAtosParameter());
         $request = new AtosRequest(Config::get('payment.atos.merchand_id'), 'fr', Config::get('payment.atos.pathfile'), Config::get('payment.atos.requestPath'), Config::get('payment.atos.responsePath'), Config::get('payment.atos.isDebug'));
-        return $request->requestGetCheckoutToken($transaction->amount, Config::get('atos.currencies'), $transaction->getAtosParameter());
+        return $request->requestGetCheckoutToken($transaction->amount, Config::get('atos.currencies'), $parameters);
     }
     public function getTransactionFromCallback($encryptedData)
     {

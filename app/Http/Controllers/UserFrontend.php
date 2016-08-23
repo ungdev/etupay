@@ -14,10 +14,8 @@ class UserFrontend extends Controller
     public function paymentGatewayChoice(Request $request, Transaction $transaction)
     {
         $gws = $this->getPaymentGateway($transaction);
-        foreach ($gws as $gw)
-        {
-            echo $gw->getChoosePage($transaction);
-        }
+
+        return view('frontend.basket', ['transaction'=>$transaction, 'gateways'=>$gws]);
     }
 
     public function atosCallback(Request $request)
