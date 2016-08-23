@@ -10,10 +10,11 @@ return [
                 'currencies'    => env('ATOS_CURRENCIES', 'EUR'),
                 'max_amount'    => 1000000,
                 'min_amount'    => 100,
-                'callback_url'  => env('APP_URL').'/atos/callback',
-                'cancel_url'    => env('APP_URL').'/atos/callback',
-                'return_url'    => env('APP_URL').'/atos/callback',
                 ],
+    'paypal' => [
+                'clientId'      => env('PAYPAL_CLIENTID'),
+                'clientSecret'  => env('PAYPAL_SECRET'),
+    ],
     'gateway' => [
         \App\PaymentProvider\AtosProvider::class,
         \App\PaymentProvider\PaypalProvider::class,

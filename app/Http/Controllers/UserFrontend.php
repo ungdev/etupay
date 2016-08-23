@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\PaymentProvider\AtosProvider;
+use App\PaymentProvider\PaypalProvider;
 use Illuminate\Http\Request;
 use App\Facades\PaymentLoader;
-use App\Http\Requests;
+
 
 class UserFrontend extends Controller
 {
@@ -29,6 +30,15 @@ class UserFrontend extends Controller
             $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
             return redirect($transaction->service->return_url.'?payload='.$payload);
         }
+    }
+
+    public function paypalRedirect(Transaction $transaction)
+    {
+        $paypal = new PaypalProvider();
+        if(!$paypal->canBeUsed($transaction))
+            abort(402, "Can't used Paypal for this transaction");
+
+        return redirect($paypal->getAuthorizeUrl($transaction));
     }
 
     protected function getPaymentGateway(Transaction $transaction)
