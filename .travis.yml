@@ -24,7 +24,7 @@ script:
 notifications:
   webhooks:
     urls:
-    - https://pay.uttnetgroup.fr/deploy
+    - https://etupay.utt.fr/deploy
     on_failure: never
     on_start: never
     on_pull_requests: false
