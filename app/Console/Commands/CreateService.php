@@ -48,7 +48,6 @@ class CreateService extends Command
         $service->fundation_id = $this->ask('Fundation ID: ');
         $service->host = $this->ask('Service server address: ', 'integration.uttnetgroup.fr');
         $service->return_url = $this->ask('Return url: ');
-        $service->cancel_url = $this->ask('Cancel url: ');
         $service->callback_url = $this->ask('Callback url: ');
 
         if ($this->confirm('Do you wish to confirm? [y|N]')) {

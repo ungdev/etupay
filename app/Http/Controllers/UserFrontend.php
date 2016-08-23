@@ -14,7 +14,6 @@ class UserFrontend extends Controller
     public function paymentGatewayChoice(Request $request, Transaction $transaction)
     {
         $gws = $this->getPaymentGateway($transaction);
-        echo $request->getClientIp();
         foreach ($gws as $gw)
         {
             echo $gw->getChoosePage($transaction);
@@ -32,11 +31,21 @@ class UserFrontend extends Controller
         }
     }
 
+    public function paypalCallback(Request $request)
+    {
+        $provider = new PaypalProvider();
+        if($transaction = $provider->processCallback($request))
+        {
+            $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
+            return redirect($transaction->service->return_url.'?payload='.$payload);
+        }
+    }
+
     public function paypalRedirect(Transaction $transaction)
     {
         $paypal = new PaypalProvider();
         if(!$paypal->canBeUsed($transaction))
-            abort(402, "Can't used Paypal for this transaction");
+            abort(402, "Can't use Paypal for this transaction");
 
         return redirect($paypal->getAuthorizeUrl($transaction));
     }

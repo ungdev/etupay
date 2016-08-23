@@ -29,8 +29,9 @@ Route::group([], function(){
     Route::get('/atos/return', ['as'=> 'return.atos', 'uses' => 'UserFrontend@atosCallback']);
     Route::post('/atos/return', ['as'=> 'return.atos', 'uses' => 'UserFrontend@atosCallback']);
 
-    Route::get('/paypal/callback', ['as'=> 'callback.paypal', 'uses' => 'CallbackController@handlePaypalCallback']);
-    Route::post('/paypal/callback', ['as'=> 'callback.paypal', 'uses' => 'CallbackController@handlePaypalCallback']);
+    //Route::get('/paypal/return', ['as'=> 'return.paypal', 'uses' => 'UserFrontend@paypalCallback']);
+
+    Route::get('/paypal/return', ['as'=> 'return.paypal', 'uses' => 'UserFrontend@paypalCallback']);
     Route::get('/transaction/{InitialisedTransaction}/paypal', ['as'=> 'userFrontend.paypalRedirect', 'uses' => 'UserFrontend@paypalRedirect']);
 });
 

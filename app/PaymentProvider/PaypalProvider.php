@@ -49,29 +49,36 @@ class PaypalProvider implements PaymentGateway
             $payment = Payment::get($request->query('paymentId'), $this->getPaypalApiContext());
             $execution = new PaymentExecution();
             $execution->setPayerId($request->query('PayerID'));
-            if($transaction = Transaction::find($payment->transactions[0]->invoice_number))
+            if($transaction = Transaction::find($payment->transactions[0]->custom))
             {
+                $transaction->provider = $this->getName();
                 if($payment->state == 'created') {
-                    $payment->execute($execution, $this->getPaypalApiContext());
+                    try {
+                        $payment->execute($execution, $this->getPaypalApiContext());
+                    } catch (\Exception $e)
+                    {
+                        die($e->getData());
+                    }
                     $transaction->bank_transaction_id = $payment->id;
                     switch ($payment->state)
                     {
                         case 'approved':
-                            $transaction->data = json_encode($payment);
+                            $transaction->data = $payment->toJSON();
                             $transaction->callbackAccepted();
                             break;
                         case 'failed':
-                            $transaction->data = json_encode($payment);
+                            $transaction->data = $payment->toJSON();
                             $transaction->callbackRefused();
                             break;
                     }
                 }
 
+                return $transaction;
+
             }else
                 throw new \Exception("Can't find transaction attached to request");
-
-            $payment->execute($execution, $this->getPaypalApiContext());
-        }
+        }else
+            throw new \Exception("Incorrect return");
     }
 
     public function getAuthorizeUrl(Transaction $transaction)
@@ -86,12 +93,12 @@ class PaypalProvider implements PaymentGateway
         $pTransaction = new \PayPal\Api\Transaction();
         $pTransaction->setAmount($amount)
             ->setDescription($transaction->description)
-            ->setInvoiceNumber($transaction->id)
-            ->setNotifyUrl(url()->route('callback.paypal'));
+            ->setCustom($transaction->id);
+         //   ->setNotifyUrl(url()->route('callback.paypal'));
 
         $redirectUrl = new RedirectUrls();
-        $redirectUrl->setReturnUrl(url()->route('callback.paypal'))
-            ->setCancelUrl(url()->route('callback.paypal'));
+        $redirectUrl->setReturnUrl(url()->route('return.paypal'))
+            ->setCancelUrl(url()->route('userFrontend.choose', ['InitialisedTransaction' => $transaction]));
 
         $payment = new Payment();
         $payment->setIntent('authorize')
@@ -122,7 +129,7 @@ class PaypalProvider implements PaymentGateway
             array(
                 'mode' => 'sandbox',
                 'log.LogEnabled' => true,
-                'log.FileName' => __DIR__.'/../PayPal.log',
+                'log.FileName' => storage_path('logs/PayPal.log'),
                 'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
                 'cache.enabled' => true,
                 // 'http.CURLOPT_CONNECTTIMEOUT' => 30

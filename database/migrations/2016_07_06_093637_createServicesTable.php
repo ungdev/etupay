@@ -18,7 +18,6 @@ class CreateServicesTable extends Migration
             $table->string('api_key')->unique();
             $table->integer('fundation_id')->unsigned();
             $table->string('return_url');
-            $table->string('cancel_url');
             $table->string('callback_url');
             $table->boolean('isDisabled')->default(false);
             $table->timestamps();
