@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use App\Models\AuthorisationTransaction;
 use App\Models\ImmediateTransaction;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -23,8 +24,8 @@ class PaymentLoader
                 $transaction->bind($data);
                 break;
             case 'authorisation':
-                //$this->type = 'authorisation';
-
+                $transaction = new AuthorisationTransaction();
+                $transaction->bind($data);
                 break;
             default:
                 throw new \Exception('Wrong transaction type');
