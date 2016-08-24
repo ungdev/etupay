@@ -108,8 +108,8 @@ class PaypalProvider implements PaymentGateway
         $payment->setIntent('authorize')
             ->setPayer($payer)
             ->setRedirectUrls($redirectUrl)
-            ->setTransactions([$pTransaction]);
-        //->setExperienceProfileId();
+            ->setTransactions([$pTransaction])
+            ->setExperienceProfileId('XP-BFW3-9TTP-JRUK-U6LF');
 
         try{
             $payment->create($this->getPaypalApiContext());
