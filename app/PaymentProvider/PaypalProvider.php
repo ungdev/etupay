@@ -39,7 +39,6 @@ class PaypalProvider implements PaymentGateway
 
     public function getChoosePage(Transaction $transaction)
     {
-        //return route('userFrontend.paypalRedirect', ['InitialisedTransaction' => $transaction]);
         return view('gateways.paypal.basket', ['url' => route('userFrontend.paypalRedirect', ['InitialisedTransaction' => $transaction])]);
     }
 
@@ -77,9 +76,9 @@ class PaypalProvider implements PaymentGateway
                 return $transaction;
 
             }else
-                throw new \Exception("Can't find transaction attached to request");
+                abort(404, 'No transaction found !');
         }else
-            throw new \Exception("Incorrect return");
+            abort(404, 'Wrong form.');
     }
 
     public function getAuthorizeUrl(Transaction $transaction)
@@ -111,7 +110,7 @@ class PaypalProvider implements PaymentGateway
             $payment->create($this->getPaypalApiContext());
         } catch (\Exception $ex)
         {
-            throw new \Exception('Can\'t create paypal request.');
+            abort(503, 'Can\'t create PayPal transaction. ');
         }
 
         return $payment->getApprovalLink();
@@ -128,10 +127,10 @@ class PaypalProvider implements PaymentGateway
 
         $apiContext->setConfig(
             array(
-                'mode' => 'sandbox',
+                'mode' => 'live',
                 'log.LogEnabled' => true,
                 'log.FileName' => storage_path('logs/PayPal.log'),
-                'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
+                'log.LogLevel' => 'INFO', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
                 'cache.enabled' => true,
                 // 'http.CURLOPT_CONNECTTIMEOUT' => 30
                 // 'http.headers.PayPal-Partner-Attribution-Id' => '123123123'

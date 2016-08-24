@@ -43,7 +43,7 @@ class UserFrontend extends Controller
     {
         $paypal = new PaypalProvider();
         if(!$paypal->canBeUsed($transaction))
-            abort(402, "Can't use Paypal for this transaction");
+            abort(404, "Can't use Paypal for this transaction");
 
         return redirect($paypal->getAuthorizeUrl($transaction));
     }

@@ -52,6 +52,7 @@ class AtosProvider implements PaymentGateway
     {
         $parameters = [
             'header_flag' => 'yes',
+            'logo_id2'    => 'BDE.gif'
         ];
         $parameters = array_merge($parameters, $transaction->getAtosParameter());
         $request = new AtosRequest(Config::get('payment.atos.merchand_id'), 'fr', Config::get('payment.atos.pathfile'), Config::get('payment.atos.requestPath'), Config::get('payment.atos.responsePath'), Config::get('payment.atos.isDebug'));

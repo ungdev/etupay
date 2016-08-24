@@ -70,10 +70,11 @@ class Transaction extends Model
             }
 
             if ($total != $this->attributes['amount'])
-                throw new \Exception('Invalid total amount.');
+                abort(400, 'Invalid total amount');
             else
                 $this->articles = $articles;
-        }
+        } else
+            abort(400, 'Missing articles field.');
     }
 
 
