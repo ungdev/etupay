@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\AuthorisationTransaction;
 use App\Models\Transaction;
 use PayPal\Api\Amount;
+use PayPal\Api\FlowConfig;
+use PayPal\Api\InputFields;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
@@ -86,6 +88,8 @@ class PaypalProvider implements PaymentGateway
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
 
+
+
         $amount = new Amount();
         $amount->setCurrency('EUR')
             ->setTotal($transaction->amount/100);
@@ -105,6 +109,7 @@ class PaypalProvider implements PaymentGateway
             ->setPayer($payer)
             ->setRedirectUrls($redirectUrl)
             ->setTransactions([$pTransaction]);
+        //->setExperienceProfileId();
 
         try{
             $payment->create($this->getPaypalApiContext());

@@ -54,6 +54,10 @@ class AtosProvider implements PaymentGateway
             'header_flag' => 'yes',
             'logo_id2'    => 'BDE.gif'
         ];
+
+        if(!filter_var($this->transaction->client_mail, FILTER_VALIDATE_EMAIL))
+            $parameters['customer_email'] = $this->transaction->client_mail;
+
         $parameters = array_merge($parameters, $transaction->getAtosParameter());
         $request = new AtosRequest(Config::get('payment.atos.merchand_id'), 'fr', Config::get('payment.atos.pathfile'), Config::get('payment.atos.requestPath'), Config::get('payment.atos.responsePath'), Config::get('payment.atos.isDebug'));
         return $request->requestGetCheckoutToken($transaction->amount, Config::get('atos.currencies'), $parameters);
