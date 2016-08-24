@@ -53,6 +53,8 @@ class Transaction extends Model
         $this->attributes['description'] = (isset($data['description']) ? $data['description'] : null);
         $this->attributes['client_mail'] = (isset($data['client_mail']) ? $data['client_mail'] : null);
         $this->attributes['service_data'] = (isset($data['service_data']) ? $data['service_data'] : null);
+        $this->firstname = (isset($data['firstname']) ? $data['firstname'] : null);
+        $this->lastname = (isset($data['lastname']) ? $data['lastname'] : null);
 
         if(isset($data['articles']) && is_array($data['articles']))
         {
