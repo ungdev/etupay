@@ -109,7 +109,7 @@ class PaypalProvider implements PaymentGateway
             ->setPayer($payer)
             ->setRedirectUrls($redirectUrl)
             ->setTransactions([$pTransaction])
-            ->setExperienceProfileId('XP-BFW3-9TTP-JRUK-U6LF');
+            ->setExperienceProfileId('XP-TD2U-N4G8-A23K-9T6B');
 
         try{
             $payment->create($this->getPaypalApiContext());
