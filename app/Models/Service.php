@@ -32,4 +32,9 @@ class Service extends Model
     {
         $this->attributes['api_key'] = base64_encode(\openssl_random_pseudo_bytes(32));
     }
+
+    public function isDevMode()
+    {
+        return $this->is_dev_mode;
+    }
 }

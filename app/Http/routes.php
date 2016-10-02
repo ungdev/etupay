@@ -33,6 +33,9 @@ Route::group([], function(){
 
     Route::get('/paypal/return', ['as'=> 'return.paypal', 'uses' => 'UserFrontend@paypalCallback']);
     Route::get('/transaction/{InitialisedTransaction}/paypal', ['as'=> 'userFrontend.paypalRedirect', 'uses' => 'UserFrontend@paypalRedirect']);
+
+    //Mode DEV:
+    Route::get('/transaction/devMode/{InitialisedTransaction}/{action}', ['as'=> 'userFrontend.devMode', 'uses' => 'UserFrontend@devAction']);
 });
 
 Route::group([], function(){

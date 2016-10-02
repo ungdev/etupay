@@ -4,9 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "992b9f2702ec4689be4643f20fbd3000",
-    "content-hash": "696d2a064af4b824e56dbc2e1eb0095d",
+    "hash": "d1a796afb0950b98c0733c6f02819ec4",
+    "content-hash": "e2cdaabd01ff87f78011397a4349dc83",
     "packages": [
+        {
+            "name": "alsofronie/eloquent-uuid",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alsofronie/eloquent-uuid.git",
+                "reference": "0c8d19fba5be61d1837fd2a52b48c6eea2efebb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alsofronie/eloquent-uuid/zipball/0c8d19fba5be61d1837fd2a52b48c6eea2efebb8",
+                "reference": "0c8d19fba5be61d1837fd2a52b48c6eea2efebb8",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^5.1.0",
+                "webpatser/laravel-uuid": "2.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alsofronie\\Uuid\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Sofronie",
+                    "email": "alsofronie@gmail.com"
+                }
+            ],
+            "description": "A Laravel Eloquent Model trait for using UUID's as primary keys",
+            "time": "2016-08-31 19:48:32"
+        },
         {
             "name": "classpreloader/classpreloader",
             "version": "3.0.0",
@@ -2500,6 +2540,53 @@
                 "environment"
             ],
             "time": "2016-06-14 14:14:52"
+        },
+        {
+            "name": "webpatser/laravel-uuid",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webpatser/laravel-uuid.git",
+                "reference": "6ed2705775e3edf066b90e1292f76f157ec00507"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webpatser/laravel-uuid/zipball/6ed2705775e3edf066b90e1292f76f157ec00507",
+                "reference": "6ed2705775e3edf066b90e1292f76f157ec00507",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "1.5.*",
+                "phpunit/phpunit": "4.7.*"
+            },
+            "suggest": {
+                "paragonie/random_compat": "A random_bytes Php 5.x polyfill."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Webpatser\\Uuid": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Kempen",
+                    "email": "christoph@downsized.nl"
+                }
+            ],
+            "description": "Class to generate a UUID according to the RFC 4122 standard. Support for version 1, 3, 4 and 5 UUID are built-in.",
+            "homepage": "https://github.com/webpatser/uuid",
+            "keywords": [
+                "UUID RFC4122"
+            ],
+            "time": "2016-05-09 09:22:18"
         }
     ],
     "packages-dev": [
@@ -3922,7 +4009,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "alsofronie/eloquent-uuid": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

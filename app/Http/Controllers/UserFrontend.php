@@ -48,6 +48,30 @@ class UserFrontend extends Controller
         return redirect($paypal->getAuthorizeUrl($transaction));
     }
 
+    public function devAction(Transaction $transaction, $action)
+    {
+        if(!$transaction->service->isDevMode())
+            abort('404');
+
+        $transaction->provider = 'devMode';
+        switch ($action)
+        {
+            case 'success':
+                $transaction->callbackAccepted();
+                break;
+            case 'canceled':
+                $transaction->callbackCanceled(); break;
+            case 'refused':
+                $transaction->callbackRefused(); break;
+            default:
+                abort('404', 'Inconnu action');
+
+        }
+
+        $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
+        return redirect($transaction->service->return_url.'?payload='.$payload);
+    }
+
     protected function getPaymentGateway(Transaction $transaction)
     {
         //$transaction->callbackAccepted();
