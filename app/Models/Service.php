@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repayment;
 use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
@@ -20,7 +21,7 @@ class Service extends Model
 
     public function fundation()
     {
-        return $this->hasOne('App\Models\Fundation');
+        return $this->belongsTo('App\Models\Fundation');
     }
 
     public function transactions()
@@ -33,8 +34,33 @@ class Service extends Model
         $this->attributes['api_key'] = base64_encode(\openssl_random_pseudo_bytes(32));
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'services_users');
+    }
+
     public function isDevMode()
     {
         return $this->is_dev_mode;
+    }
+
+    public function repayments()
+    {
+        return $this->hasMany(Repayment::class);
+    }
+    public function repaymentsAmount()
+    {
+        return $this->repayments()
+            ->whereNotNull('done_at')
+            ->sum('amount');
+    }
+    public function getSolde()
+    {
+        $transaction_amount = $this->transactions()
+            ->where('provider','!=' ,'devMode')
+            ->where('step', 'PAID')
+            ->sum('amount');
+
+        return ($transaction_amount - $this->repaymentsAmount());
     }
 }

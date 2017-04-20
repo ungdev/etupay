@@ -9,7 +9,7 @@ class TransactionScope implements ScopeInterface
 {
     protected $type;
 
-    public function __construct(string $type)
+    public function __construct($type)
     {
         $this->type = strtoupper($type);
     }

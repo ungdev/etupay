@@ -51,3 +51,12 @@ Route::bind('InitialisedTransaction', function ($id){
         return $transaction;
     else abort(404);
 });
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
+
+Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function(){
+    Route::get('home', 'HomeController@index')->name('dashboard.index');
+    Route::get('services', 'ServiceController@index')->name('dashboard.services.index');
+});
+
