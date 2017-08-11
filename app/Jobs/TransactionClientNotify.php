@@ -39,8 +39,9 @@ class TransactionClientNotify extends Job implements ShouldQueue
         $transaction = $this->transaction;
         // On fait la transaction
         $client  = new Client();
-        $res = $client->request('POST',$transaction->service->callback_url,[
-            'json' => [ 'payload' => PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn()) ],
+        $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
+        $res = $client->request('POST',$transaction->service->callback_url.'?payload='.$payload,[
+            'json' => [ 'payload' => $payload ],
             'verify' => false,
         ]);
         if($res->getStatusCode() != 200)
