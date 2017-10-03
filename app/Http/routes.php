@@ -24,7 +24,8 @@ Route::group(['middleware' => 'bank'], function(){
 
 
 Route::group([], function(){
-    Route::get('/transaction/{InitialisedTransaction}', ['as'=> 'userFrontend.choose', 'uses' => 'UserFrontend@paymentGatewayChoice']);
+    //Route::get('/transaction/{InitialisedTransaction}', ['as'=> 'userFrontend.choose', 'uses' => 'UserFrontend@paymentGatewayChoice']);
+    Route::get('/transaction/{uuid}', ['as'=> 'userFrontend.uuid.choose', 'uses' => 'UserFrontend@paymentGatewayChoice']);
 
     Route::get('/atos/return', ['as'=> 'return.atos', 'uses' => 'UserFrontend@atosCallback']);
     Route::post('/atos/return', ['as'=> 'return.atos', 'uses' => 'UserFrontend@atosCallback']);
@@ -51,3 +52,5 @@ Route::bind('InitialisedTransaction', function ($id){
         return $transaction;
     else abort(404);
 });
+
+//Route::pattern('uuid', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');

@@ -24,7 +24,7 @@ class TransactionRequest extends Controller
     public function incomming(PaymentRequest $request)
     {
          $request->Transaction->save();
-        return redirect()->route('userFrontend.choose', $request->Transaction);
+        return redirect()->route('userFrontend.uuid.choose', ['uuid' => $request->Transaction->uuid]);
     }
 
 

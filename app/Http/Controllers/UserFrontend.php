@@ -11,8 +11,12 @@ use App\Facades\PaymentLoader;
 
 class UserFrontend extends Controller
 {
-    public function paymentGatewayChoice(Request $request, Transaction $transaction)
+    public function paymentGatewayChoice(Request $request, $uuid)
     {
+        $transaction = Transaction::where('uuid', $uuid)->where('step', 'INITIALISED')->first();
+        if(!$transaction)
+            abort(404);
+
         $gws = $this->getPaymentGateway($transaction);
 
         return view('frontend.basket', ['transaction'=>$transaction, 'gateways'=>$gws]);

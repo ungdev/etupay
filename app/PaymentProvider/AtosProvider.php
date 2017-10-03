@@ -38,7 +38,6 @@ class AtosProvider implements PaymentGateway
 
     public function canBeUsed(Transaction $transaction):bool
     {
-
         //Check min an max amount
         if($transaction->amount > Config::get('transaction.atos.max_amount', 100000) || $transaction->amount < Config::get('payment.atos.min_amount',100))
             return false;

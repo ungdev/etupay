@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Jobs\TransactionClientNotify;
 use App\Jobs\TransactionNotify;
 use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Uuid;
 
 class Transaction extends Model
 {
@@ -13,6 +14,15 @@ class Transaction extends Model
     protected $casts = [
         'articles' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->uuid = Uuid::uuid4()->toString();
+        });
+    }
 
     public function callbackAccepted()
     {
