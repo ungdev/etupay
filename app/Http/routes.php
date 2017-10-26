@@ -37,6 +37,10 @@ Route::group([], function(){
 
     //Mode DEV:
     Route::get('/transaction/devMode/{InitialisedTransaction}/{action}', ['as'=> 'userFrontend.devMode', 'uses' => 'UserFrontend@devAction']);
+
+    //Payline
+    Route::get('/payline/return', ['as'=> 'return.payline', 'uses' => 'UserFrontend@paylineCallback']);
+    Route::get('/payline/callback', ['as'=> 'callback.payline', 'uses' => 'CallbackController@handlePaylineCallback']);
 });
 
 Route::group([], function(){

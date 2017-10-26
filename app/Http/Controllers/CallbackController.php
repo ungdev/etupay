@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\PaymentProvider\AtosProvider;
+use App\PaymentProvider\PaylineProvider;
 use App\PaymentProvider\PaypalProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,14 @@ class CallbackController extends Controller
 
     public function handlePaypalCallback(Request $request)
     {
+
+    }
+
+    public function handlePaylineCallback(Request $request)
+    {
+        $provider = new PaylineProvider();
+        Log::info('Payline callback');
+        $provider->processCallback($request->input('paylinetoken'));
 
     }
 

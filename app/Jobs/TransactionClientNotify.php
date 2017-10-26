@@ -35,16 +35,17 @@ class TransactionClientNotify extends Job implements ShouldQueue
      */
     public function handle(Transaction $transaction)
     {
-
-        $transaction = $this->transaction;
-        // On fait la transaction
-        $client  = new Client();
-        $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
-        $res = $client->request('POST',$transaction->service->callback_url.'?payload='.$payload,[
-            'json' => [ 'payload' => $payload ],
-            'verify' => false,
-        ]);
-        if($res->getStatusCode() != 200)
-            throw new \Exception($res->getStatusCode().' error during #'.$transaction->id.' callback');
+        if(isset($transaction->service->callback_url)) {
+            $transaction = $this->transaction;
+            // On fait la transaction
+            $client = new Client();
+            $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
+            $res = $client->request('POST', $transaction->service->callback_url . '?payload=' . $payload, [
+                'json' => ['payload' => $payload],
+                'verify' => false,
+            ]);
+            if ($res->getStatusCode() != 200)
+                throw new \Exception($res->getStatusCode() . ' error during #' . $transaction->id . ' callback');
+        }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Jobs\TransactionClientNotify;
 use App\Jobs\TransactionNotify;
+use App\PaymentProvider\PaymentGateway;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
@@ -133,6 +134,15 @@ class Transaction extends Model
     {
         if($this->attributes['id'])
             $this->exists = true;
+    }
+
+    public function getProvider()
+    {
+        if(isset($this->attributes['provider']))
+        {
+            $provider =  config('payment.gateway')[$this->provider];
+            return new $provider;
+        }
     }
 
 

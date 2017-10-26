@@ -12,12 +12,22 @@
     <div class="skin-blue layout-top-nav">
         <div class="wrapper">
             <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="#" class="navbar-brand"><span><img style="max-width:100px; margin-top: -7px; max-height: 27px;" src="{{ asset('images/logo.png') }}"></span><b> EtuPay</b>, plateforme de paiement associative </a>
+                        </div>
+
+
+                    </div><!-- /.container-fluid -->
+                </nav>
             </header>
 
             <div class="content-wrapper">
                 <div class="container">
                     <section class="content-header">
                         @include('display-errors')
+
                         @if (count($errors) > 0)
                             <div class="alert alert-danger">
                                 <ul>

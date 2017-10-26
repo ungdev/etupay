@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Paiement en ligne')
+@section('title', 'Paiement en ligne, pour le compte '.$transaction->service->fundation->name_prefix.$transaction->service->fundation->name)
 
 @section('smalltitle', $transaction->service->description)
 
@@ -9,7 +9,7 @@
         <div class="callout callout-info">
             <h4>Caution bancaire</h4>
 
-            <p>Dans le cadre de cette transaction, seule une autorisation bancaire d'un montant de 60€ et pour une durée limitée sera effectuée auprès de votre banque. Le montant ne sera pas débité !</p>
+            <p>Dans le cadre de cette transaction, seule une autorisation bancaire d'un montant de {{ $transaction->amount/100 }}€ et pour une durée limitée sera effectuée auprès de votre banque. Le montant ne sera pas débité !</p>
         </div>
     @endif
 
@@ -55,4 +55,5 @@
     @foreach($gateways as $gateway)
         {!! $gateway->getChoosePage($transaction) !!}
     @endforeach
+
 @endsection

@@ -20,6 +20,9 @@ class PaypalProvider implements PaymentGateway
 {
     public function canBeUsed(Transaction $transaction):bool
     {
+        if(!config('payment.paypal.clientId', false) || !config('payment.paypal.clientSecret', false))
+            return false;
+
         if($transaction->amount<=0)
             return false;
 
@@ -144,6 +147,12 @@ class PaypalProvider implements PaymentGateway
         );
 
         return $apiContext;
+    }
+
+    public function getHumanisedReport(Transaction $transaction)
+    {
+        $trs = json_decode($transaction->data);
+        return "Transaction paypal n°".$trs->id;
     }
 
 }

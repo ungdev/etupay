@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\PaymentProvider\AtosProvider;
+use App\PaymentProvider\PaylineProvider;
 use App\PaymentProvider\PaypalProvider;
 use Illuminate\Http\Request;
 use App\Facades\PaymentLoader;
@@ -22,6 +23,15 @@ class UserFrontend extends Controller
         return view('frontend.basket', ['transaction'=>$transaction, 'gateways'=>$gws]);
     }
 
+    public function paylineCallback(Request $request)
+    {
+        $provider = new PaylineProvider();
+        if($transaction = $provider->processCallback($request->input('paylinetoken')))
+        {
+            $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
+            return redirect($transaction->service->return_url.'?payload='.$payload);
+        }
+    }
     public function atosCallback(Request $request)
     {
         $provider = new AtosProvider();

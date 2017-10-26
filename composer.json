@@ -12,7 +12,9 @@
         "guzzlehttp/guzzle": "~6.0",
         "paypal/rest-api-sdk-php": "*",
         "alsofronie/eloquent-uuid": "dev-master",
-        "ramsey/uuid": "^3.7"
+        "ramsey/uuid": "^3.7",
+        "payline/sdk": "^4.45",
+        "monext/payline-sdk": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -50,6 +52,13 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
         ]
+    },
+    "extra": {
+        "heroku": {
+            "framework": "silex",
+            "document-root": "public",
+            "index-document": "index.php"
+        }
     },
     "config": {
         "preferred-install": "dist"

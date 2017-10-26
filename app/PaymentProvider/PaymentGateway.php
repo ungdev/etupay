@@ -12,4 +12,6 @@ interface PaymentGateway
     public function getName();
     public function getChoosePage(Transaction $transaction);
 
+    public function getHumanisedReport(Transaction $transaction);
+
 }

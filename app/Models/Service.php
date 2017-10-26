@@ -20,7 +20,7 @@ class Service extends Model
 
     public function fundation()
     {
-        return $this->hasOne('App\Models\Fundation');
+        return $this->belongsTo('App\Models\Fundation');
     }
 
     public function transactions()

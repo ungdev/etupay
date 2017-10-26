@@ -38,6 +38,9 @@ class AtosProvider implements PaymentGateway
 
     public function canBeUsed(Transaction $transaction):bool
     {
+        //Check config
+        if(!config('payment.atos.merchand_id', false))
+            return false;
         //Check min an max amount
         if($transaction->amount > Config::get('transaction.atos.max_amount', 100000) || $transaction->amount < Config::get('payment.atos.min_amount',100))
             return false;
@@ -75,27 +78,23 @@ class AtosProvider implements PaymentGateway
         $request = new AtosRequest(Config::get('payment.atos.merchand_id'), 'fr', Config::get('payment.atos.pathfile'), Config::get('payment.atos.requestPath'), Config::get('payment.atos.responsePath'), Config::get('payment.atos.isDebug'));
         $req = $request->requestDoCheckoutPayment($encryptedData);
 
-        if($req->isSuccess())
-            if($transaction = Transaction::find($req->body->get('caddie')))
-            {
-                if($transaction->step != 'INITIALISED')
-                {
-                    Log::error('Transaction '.$transaction->id.' already processed. ABORDING');
+        if ($req->isSuccess())
+            if ($transaction = Transaction::find($req->body->get('caddie'))) {
+                if ($transaction->step != 'INITIALISED') {
+                    Log::error('Transaction ' . $transaction->id . ' already processed. ABORDING');
                     return $transaction;
                 }
                 $transaction->data = json_encode($req->body->all());
                 $transaction->bank_transaction_id = $req->body->get('transaction_id');
                 $transaction->provider = $this->getName();
 
-                if($req->body->get('amount') != $transaction->amount)
-                {
+                if ($req->body->get('amount') != $transaction->amount) {
                     throw new \Exception('Discordance in transaction amount');
                     $transaction->save();
-                    Log::critical('Discordance in transaction amount '.$transaction->id);
+                    Log::critical('Discordance in transaction amount ' . $transaction->id);
                     return false;
                 }
-                switch ($req->body->get('response_code'))
-                {
+                switch ($req->body->get('response_code')) {
                     case '00': // Accepted
                         $transaction->callbackAccepted();
                         break;
@@ -117,13 +116,18 @@ class AtosProvider implements PaymentGateway
 
                     default:
                         $transaction->callbackCanceled();
-                        Log::warning('Inconnu atos return code. '.$transaction->id. 'code: '.$req->body->get('response_code'));
+                        Log::warning('Inconnu atos return code. ' . $transaction->id . 'code: ' . $req->body->get('response_code'));
 
                 }
 
-                Log::info('Processing callback transaction '.$transaction->id);
+                Log::info('Processing callback transaction ' . $transaction->id);
                 $transaction->save();
                 return $transaction;
             }
     }
+
+        public function getHumanisedReport(Transaction $transaction)
+        {
+            return "Transaction via ATOS";
+        }
 }

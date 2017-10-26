@@ -10,4 +10,11 @@ class Fundation extends Model
     {
         return $this->hasMany('App\Service');
     }
+
+    public function getNamePrefixAttribute($value)
+    {
+        if(!$value)
+            return 'de ';
+        return $value;
+    }
 }
