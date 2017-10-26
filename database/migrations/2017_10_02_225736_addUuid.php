@@ -6,6 +6,11 @@ use Ramsey\Uuid\Uuid;
 
 class AddUuid extends Migration
 {
+    public function __construct()
+    {
+        \Illuminate\Support\Facades\DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+    }
+
     /**
      * Run the migrations.
      *
