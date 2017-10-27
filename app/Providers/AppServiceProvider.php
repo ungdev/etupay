@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Service;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if (!App::environment('local')) {
+            URL::forceSchema('https');
+        }
     }
 }
