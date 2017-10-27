@@ -14,7 +14,6 @@ class AddUuid extends Migration
      */
     public function up()
     {
-        Schema::getConnection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
         if(!Schema::hasColumn('transactions','uuid')) {
             Schema::table('transactions', function (Blueprint $table) {
@@ -31,9 +30,11 @@ class AddUuid extends Migration
                 $transaction->save();
             }
         }
+        /**
         Schema::table('transactions', function (Blueprint $table) {
             $table->uuid('uuid')->nullable(false)->unique()->change();
         });
+         * **/
     }
 
     /**
