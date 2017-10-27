@@ -6,10 +6,6 @@ use Ramsey\Uuid\Uuid;
 
 class AddUuid extends Migration
 {
-    public function __construct()
-    {
-        \Illuminate\Support\Facades\DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-    }
 
     /**
      * Run the migrations.
@@ -18,6 +14,8 @@ class AddUuid extends Migration
      */
     public function up()
     {
+        Schema::getConnection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
         if(!Schema::hasColumn('transactions','uuid')) {
             Schema::table('transactions', function (Blueprint $table) {
                 $table->uuid('uuid')->after('id')->nullable();
