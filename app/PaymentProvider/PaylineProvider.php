@@ -159,7 +159,7 @@ class PaylineProvider implements PaymentGateway
         } else if ($transaction instanceof AuthorisationTransaction && $transaction->step == 'PAID')
         {
             return "Authorisation bancaire n°".$trs->authorization->number;
-        } else if ($this->step == 'REFUSED')
+        } else if ($transaction->step == 'REFUSED')
         {
             return "Echec de la transaction, raison: ".$trs->result->longMessage;
         }
