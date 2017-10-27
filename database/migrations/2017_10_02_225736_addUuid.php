@@ -28,8 +28,10 @@ class AddUuid extends Migration
         $transactions = \App\Models\Transaction::all();
         foreach ($transactions as $transaction)
         {
-            $transaction->uuid = Uuid::uuid4()->toString();
-            $transaction->save();
+            if(!$transaction->uuid) {
+                $transaction->uuid = Uuid::uuid4()->toString();
+                $transaction->save();
+            }
         }
         Schema::table('transactions', function (Blueprint $table) {
             $table->uuid('uuid')->nullable(false)->unique()->change();
