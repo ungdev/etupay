@@ -35,7 +35,6 @@ class TransactionClientNotify extends Job implements ShouldQueue
      */
     public function handle(Transaction $transaction)
     {
-        if(isset($transaction->service->callback_url)) {
             $transaction = $this->transaction;
             // On fait la transaction
             $client = new Client();
@@ -46,6 +45,6 @@ class TransactionClientNotify extends Job implements ShouldQueue
             ]);
             if ($res->getStatusCode() != 200)
                 throw new \Exception($res->getStatusCode() . ' error during #' . $transaction->id . ' callback');
-        }
+            else Log::info('Callback #' . $transaction->id . ' success');
     }
 }
