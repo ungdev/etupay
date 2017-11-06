@@ -69,7 +69,11 @@ class PaylineProvider implements PaymentGateway
                         }
                         $transaction->callbackAccepted();
                         break;
-
+                case '02324':
+                    //Transaction expiré
+                    $transaction->step = 'CANCELED';
+                    $transaction->save();
+                    break;
                     default:
                         $transaction->callbackRefused();
 
