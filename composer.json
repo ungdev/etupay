@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
+        "php": "~7.1.0",
         "laravel/framework": "5.2.*",
         "doctrine/dbal": "^2.5",
         "fideloper/proxy": "^3.1",
@@ -13,8 +13,7 @@
         "paypal/rest-api-sdk-php": "*",
         "alsofronie/eloquent-uuid": "dev-master",
         "ramsey/uuid": "^3.7",
-        "payline/sdk": "^4.45",
-        "monext/payline-sdk": "dev-master"
+        "monext/payline-sdk": "4.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
