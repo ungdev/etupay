@@ -27,7 +27,7 @@ class CallbackController extends Controller
     {
         $provider = new PaylineProvider();
         Log::info('Payline callback');
-        $provider->processCallback($request->input('token'));
+        $provider->processCallback($request->input('paylinetoken'));
 
     }
 
