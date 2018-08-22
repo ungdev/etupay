@@ -27,7 +27,13 @@ class CallbackController extends Controller
     {
         $provider = new PaylineProvider();
         Log::info('Payline callback');
-        $provider->processCallback($request->input('paylinetoken'));
+        if ($request->input('notificationType') == 'WEBTRS' && $request->has('token')) {
+            $provider->processCallback($request->input('token'));
+        }
+        else
+        {
+            $provider->processCallback($request->input('paylinetoken'));
+        }
 
     }
 
