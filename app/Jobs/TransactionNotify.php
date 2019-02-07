@@ -53,6 +53,11 @@ class TransactionNotify extends Job implements ShouldQueue
             case 'AUTHORISATION':
                 break;
 
+            case 'REFUNDED':
+                $sujet = 'Remboursement de votre transaction';
+                $template = 'emails.refunded';
+                break;
+
             case 'REFUSED':
                 $sujet = 'Échec de la transaction';
                 $template = 'emails.refused';

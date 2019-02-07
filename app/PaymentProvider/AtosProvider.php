@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Log;
 
 class AtosProvider implements PaymentGateway
 {
+    public function doRefund($id)
+    {
+        // TODO: Implement doRefund() method.
+        return false;
+    }
+
     public function getName()
     {
         return 'Atos';

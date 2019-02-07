@@ -32,6 +32,12 @@ class PaypalProvider implements PaymentGateway
         return true;
     }
 
+    public function doRefund($id)
+    {
+        // TODO: Implement doRefund() method.
+        return false;
+    }
+
     public function requestPayment(Transaction $transaction)
     {
         // TODO: Implement requestPayment() method.

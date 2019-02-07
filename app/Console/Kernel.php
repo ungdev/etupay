@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\BatchRefund;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\CreateService::class,
         Commands\ListService::class,
         Commands\EnableService::class,
+        BatchRefund::class
     ];
 
     /**

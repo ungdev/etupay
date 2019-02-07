@@ -43,6 +43,15 @@ class Transaction extends Model
         dispatch(new TransactionClientNotify($this));
     }
 
+    public function callbackRefunded()
+    {
+        $this->step = 'REFUNDED';
+        $this->save();
+
+        dispatch(new TransactionNotify($this));
+        dispatch(new TransactionClientNotify($this));
+    }
+
     public function callbackCanceled()
     {
         $this->step = 'CANCELED';
@@ -112,6 +121,10 @@ class Transaction extends Model
 
             case 'AUTHORISATION':
                 $model = new AuthorisationTransaction([], true);
+                break;
+
+            case 'REFUND':
+                $model = new RefundTransaction([], true);
                 break;
 
             default:

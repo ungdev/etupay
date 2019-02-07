@@ -26,6 +26,81 @@ class PaylineProvider implements PaymentGateway
         return 'Payline';
     }
 
+    public function getTransaction($id)
+    {
+        $param = [
+            'transactionId'      => null,
+            'orderRef'           => 'etupay_'.$id,
+            'startDate'          => null,
+            'endDate'            => null,
+            'transactionHistory' => null,
+            'archiveSearch'      => null
+        ];
+        $req = $this->sdk->getTransactionDetails($param);
+        if ($req['result']['code'] == "00000")
+        {
+            return $req;
+        } else return null;
+    }
+    public function getTransactionList($date)
+    {
+        $param = array(
+            'transactionId'       => null,
+            'orderRef'            => null,
+            'startDate'           => $date,
+            'endDate'             => $date,
+            'contractNumber'      => config('payment.payline.contract_number'),
+            'authorizationNumber' => null,
+            'returnCode'          => null,
+            'paymentMean'         => null,
+            'transactionType'     => null,
+            'name'                => null,
+            'firstName'           => null,
+            'email'               => null,
+            'cardNumber'          => null,
+            'currency'            => null,
+            'minAmount'           => null,
+            'maxAmount'           => null,
+            'walletId'            => null,
+            'sequenceNumber'      => null,
+            'token'               => null
+        );
+        $req = $this->sdk->transactionsSearch($param);
+        if ($req['result']['code'] == "00000")
+        {
+            return $req['transactionList'];
+        } else return [];
+    }
+
+    public function doRefund($id)
+    {
+        $tr = $this->getTransaction($id);
+        if($tr && $tr['result']['code'] == '00000') {
+
+            $param = [];
+            $param['transactionID'] = $tr['transaction']['id'];
+            $param['payment']['amount'] = $tr['payment']['amount'];
+            $param['payment']['currency'] = 978;
+            $param['payment']['mode'] = 'CPT';
+            $param['payment']['action'] = 421;
+            $param['payment']['contractNumber'] = config('payment.payline.contract_number');
+            $param['sequenceNumber'] = null;
+
+            $this->sdk->resetPrivateData();
+            $this->sdk->addPrivateData(['key' => 'linked_etupay_id', 'value' => $id]);
+            $param['comment'] = 'Remboursement automatisé';
+
+            $return = $this->sdk->doRefund($param);
+            if ($return['result']['code'] == '00000')
+                return $return;
+            else {
+                Log::error("PaylineProvider - Refund - Transaction " . $id . " - " . $return['result']['code'] . ": " . $return['result']['longMessage']);
+                return false;
+            }
+        } else return false;
+
+    }
+
     public function processCallback(string $token):Transaction
     {
         $req = $this->sdk->getWebPaymentDetails(['token' => $token]);

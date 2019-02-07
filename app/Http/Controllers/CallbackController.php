@@ -15,7 +15,6 @@ class CallbackController extends Controller
     {
         $provider = new AtosProvider();
         $provider->processCallback($request->input('DATA'));
-
     }
 
     public function handlePaypalCallback(Request $request)

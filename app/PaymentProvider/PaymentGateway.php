@@ -9,6 +9,8 @@ interface PaymentGateway
     public function requestPayment(Transaction $transaction);
     public function canBeUsed(Transaction $transaction):bool ;
 
+    public function doRefund($id);
+
     public function getName();
     public function getChoosePage(Transaction $transaction);
 
