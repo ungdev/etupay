@@ -46,6 +46,6 @@ class DevProvider implements PaymentGateway
 
     public function getHumanisedReport(Transaction $transaction)
     {
-        return "Validation en mode dev, cette transaction n'est pas réel.";
+        return "Validation en mode dev, cette transaction n'est pas réelle.";
     }
 }
