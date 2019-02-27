@@ -185,6 +185,8 @@ class PaylineProvider implements PaymentGateway
 
     protected function doWebRequest(Transaction $transaction)
     {
+        $this->sdk->resetPrivateData();
+
         $param = [];
 
         $param['returnURL'] = url()->route('return.payline');
@@ -198,10 +200,14 @@ class PaylineProvider implements PaymentGateway
         $param['payment']['currency'] = 978;
         $param['payment']['mode'] = 'CPT';
 
-        if($transaction instanceof ImmediateTransaction)
+        if($transaction instanceof ImmediateTransaction) {
             $param['payment']['action'] = 101;
-        if($transaction instanceof AuthorisationTransaction)
+            $this->sdk->addPrivateData(['key' => '3ds_nocheck', 'value'=> 0]);
+        }
+        if($transaction instanceof AuthorisationTransaction) {
+            $this->sdk->addPrivateData(['key' => '3ds_nocheck', 'value'=> 1]);
             $param['payment']['action'] = 100;
+        }
 
         $param['order']['ref'] = 'etupay_'.$transaction->id;
         $param['order']['amount'] = $transaction->amount;
