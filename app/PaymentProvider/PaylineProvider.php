@@ -37,7 +37,7 @@ class PaylineProvider implements PaymentGateway
             'archiveSearch'      => null
         ];
         $req = $this->sdk->getTransactionDetails($param);
-        if ($req['result']['code'] == "00000")
+        if ($req['result']['shortMessage'] != "ERROR")
         {
             return $req;
         } else return null;
