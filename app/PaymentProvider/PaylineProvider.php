@@ -111,7 +111,15 @@ class PaylineProvider implements PaymentGateway
         if(!isset($req['privateDataList']['privateData'][0]['value']))
             throw new \Exception('Missing payline privateData.');
 
-        if(!$transaction = Transaction::find($req['privateDataList']['privateData'][0]['value']))
+        $tr_id = null;
+        // On récupére l'id de transaction
+        foreach ($req['privateDataList']['privateData'] as $privateData)
+        {
+            if($privateData['key'] == 'etupay_id')
+                $tr_id = $privateData['value'];
+        }
+
+        if(!$transaction = Transaction::find($tr_id))
             throw new \Exception('No transaction found.');
 
             if($transaction->step != 'INITIALISED')
