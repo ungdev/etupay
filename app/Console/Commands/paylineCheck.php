@@ -71,7 +71,7 @@ class paylineCheck extends Command
                         {
                             throw new \Exception('Discordance in transaction amount');
                             $transaction->save();
-                            Log::critical('Discordance in transaction amount '.$transaction->id);
+                            $this->error('Discordance in transaction amount '.$transaction->id);
                             return false;
                         }
                         $transaction->callbackAccepted();
@@ -86,7 +86,7 @@ class paylineCheck extends Command
 
                 }
 
-                Log::info('Processing callback transaction '.$transaction->id);
+                $this->info('Processing callback transaction '.$transaction->id);
                 $transaction->save();
                 $updated++;
             }
@@ -94,6 +94,6 @@ class paylineCheck extends Command
         }
         $this->output->progressFinish();
 
-        Log::info('Nombre de transaction consilié: '.$updated);
+        $this->info('Nombre de transaction consilié: '.$updated);
     }
 }
