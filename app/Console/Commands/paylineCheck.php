@@ -52,9 +52,9 @@ class paylineCheck extends Command
             $tr = $paylineProvider->getTransaction($transaction->id);
             if($tr)
             {
-                $transaction->data = $tr;
+                $transaction->data = json_encode($tr);
                 $transaction->bank_transaction_id = $tr['transaction']['id'];
-                $transaction->provider = $this->getName();
+                $transaction->provider = 'Payline';
 
                 switch ($tr['result']['code'])
                 {
