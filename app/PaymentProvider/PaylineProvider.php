@@ -42,6 +42,23 @@ class PaylineProvider implements PaymentGateway
             return $req;
         } else return null;
     }
+
+    public function getTransactionByPaylineId($id)
+    {
+        $param = [
+            'transactionId'      => $id,
+            'orderRef'           => null,
+            'startDate'          => null,
+            'endDate'            => null,
+            'transactionHistory' => null,
+            'archiveSearch'      => null
+        ];
+        $req = $this->sdk->getTransactionDetails($param);
+        if ($req['result']['shortMessage'] != "ERROR")
+        {
+            return $req;
+        } else return null;
+    }
     public function getTransactionList($date)
     {
         $param = array(
@@ -229,6 +246,8 @@ class PaylineProvider implements PaymentGateway
         ];
         $param['shippingAddress'] = $param['billingAddress'] = [];
         $param['payment']['contractNumber'] = config('payment.payline.contract_number');
+        $param['contracts'] = [config('payment.payline.contract_number')];
+        $param['version'] = 19;
         $param['owner'] = $param['ownerAddress'] = [];
 
         $this->sdk->addPrivateData(['key' => 'etupay_id', 'value'=> $transaction->id]);
