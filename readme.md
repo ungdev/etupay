@@ -1,27 +1,29 @@
-# Laravel PHP Framework
+# EtuPay
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+EtuPay est la plateforme de paiement associative de l'UTT. Développé en 2016 pour les besoins d'inscription au WEI automatisé avec le site de l'intégration, il s'agit plus globallement  d'une palteforme monétique (style paypal ...) permettant aux associations/club ... de proposer aux utilisateurs un système de paiment sécurisé pour leurs sites internet tout en laissant la main à la trésorerie BDE.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Permet la gestion des transactions direct ainsi que des cautions bancaire (dépend des providers).
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## Ajout d'un site
 
-## Official Documentation
+Un site s'ajoute via la cli et permet d'obtenir le service_id et la clé api nécessaire à la communication avec l'API.
+1 - Création d'une fondation (ex: association)
+2 - Création d'un service 
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+## Provider bancaire implémenté
+- Atos (LCL etc ...)
+- Payline
+- Paypal
+- Dev (mode test, permettant aux devs de vérifier le bon fonctionnement)
 
-## Contributing
+## Lib client
+- NodeJS: https://github.com/ungdev/node-etupay
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+## Techno
+ - PHP Framework: Laravel 5.2
 
-## Security Vulnerabilities
+ ## Crédits / Contact
+ - Christian d'Autume (christian@dautume.fr)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+ ## Licence
+Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)  (https://creativecommons.org/licenses/by-nc-sa/4.0/)
