@@ -12,7 +12,13 @@
             <p>Dans le cadre de cette transaction, seule une autorisation bancaire d'un montant de {{ $transaction->amount/100 }}€ et pour une durée limitée sera effectuée auprès de votre banque. Le montant ne sera pas débité !</p>
         </div>
     @endif
+    @if($transaction->service->isDevMode())
+    <div class="callout callout-warning">
+        <h4>Mode développeur</h4>
 
+        <p>La transaction ne pourra donner lieu à une preuve de paiment s'agissant d'un comportement simulé. Aucun prélévement ne sera effectué sur votre compte !</p>
+    </div>
+    @endif
     <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-eur"></i> Récapitulatif</h3>

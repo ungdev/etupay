@@ -2,32 +2,33 @@
 
 namespace App\PaymentProvider;
 
-use Illuminate\Http\Request;
 use App\Models\AuthorisationTransaction;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use PayPal\Api\Amount;
-use PayPal\Api\FlowConfig;
-use PayPal\Api\InputFields;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
-use Illuminate\Support\Facades\Config;
 
 class PaypalProvider implements PaymentGateway
 {
-    public function canBeUsed(Transaction $transaction):bool
+    public function canBeUsed(Transaction $transaction): bool
     {
-        if(!config('payment.paypal.clientId', false) || !config('payment.paypal.clientSecret', false))
+        if (!config('payment.paypal.clientId', false) || !config('payment.paypal.clientSecret', false)) {
             return false;
+        }
 
-        if($transaction->amount<=0)
+        if ($transaction->amount <= 0) {
             return false;
+        }
 
-        if(!$transaction instanceof AuthorisationTransaction)
+        if (!$transaction instanceof AuthorisationTransaction) {
             return false;
+        }
 
         return true;
     }
@@ -55,24 +56,20 @@ class PaypalProvider implements PaymentGateway
 
     public function processCallback(Request $request)
     {
-        if($request->query('paymentId'))
-        {
+        if ($request->query('paymentId')) {
             $payment = Payment::get($request->query('paymentId'), $this->getPaypalApiContext());
             $execution = new PaymentExecution();
             $execution->setPayerId($request->query('PayerID'));
-            if($transaction = Transaction::find($payment->transactions[0]->custom))
-            {
+            if ($transaction = Transaction::find($payment->transactions[0]->custom)) {
                 $transaction->provider = $this->getName();
-                if($payment->state == 'created') {
+                if ($payment->state == 'created') {
                     try {
                         $payment->execute($execution, $this->getPaypalApiContext());
-                    } catch (\Exception $e)
-                    {
+                    } catch (\Exception $e) {
                         die($e->getData());
                     }
                     $transaction->bank_transaction_id = $payment->id;
-                    switch ($payment->state)
-                    {
+                    switch ($payment->state) {
                         case 'approved':
                             $transaction->data = $payment->toJSON();
                             $transaction->callbackAccepted();
@@ -86,10 +83,14 @@ class PaypalProvider implements PaymentGateway
 
                 return $transaction;
 
-            }else
+            } else {
                 abort(404, 'No transaction found !');
-        }else
+            }
+
+        } else {
             abort(404, 'Wrong form.');
+        }
+
     }
 
     public function getAuthorizeUrl(Transaction $transaction)
@@ -97,17 +98,15 @@ class PaypalProvider implements PaymentGateway
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
 
-
-
         $amount = new Amount();
         $amount->setCurrency('EUR')
-            ->setTotal($transaction->amount/100);
+            ->setTotal($transaction->amount / 100);
 
         $pTransaction = new \PayPal\Api\Transaction();
         $pTransaction->setAmount($amount)
             ->setDescription($transaction->description)
             ->setCustom($transaction->id);
-         //   ->setNotifyUrl(url()->route('callback.paypal'));
+        //   ->setNotifyUrl(url()->route('callback.paypal'));
 
         $redirectUrl = new RedirectUrls();
         $redirectUrl->setReturnUrl(url()->route('return.paypal'))
@@ -120,10 +119,9 @@ class PaypalProvider implements PaymentGateway
             ->setTransactions([$pTransaction])
             ->setExperienceProfileId('XP-TD2U-N4G8-A23K-9T6B');
 
-        try{
+        try {
             $payment->create($this->getPaypalApiContext());
-        } catch (\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             abort(503, 'Can\'t create PayPal transaction. ');
         }
 
@@ -158,7 +156,7 @@ class PaypalProvider implements PaymentGateway
     public function getHumanisedReport(Transaction $transaction)
     {
         $trs = json_decode($transaction->data);
-        return "Transaction paypal n°".$trs->id;
+        return "Transaction paypal n°" . $trs->id;
     }
 
 }
