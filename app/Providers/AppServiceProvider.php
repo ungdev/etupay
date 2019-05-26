@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Service;
-use App\Models\Transaction;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -17,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Service::creating(function(Service $service){
+        Service::creating(function (Service $service) {
             $service->generateApiKey();
         });
     }

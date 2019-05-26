@@ -7,12 +7,7 @@
 
 namespace App\PaymentProvider;
 
-use App\Models\ImmediateTransaction;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\Config;
-
-use App\Classes\AtosRequest;
-use Illuminate\Support\Facades\Log;
 
 class DevProvider implements PaymentGateway
 {
@@ -29,7 +24,7 @@ class DevProvider implements PaymentGateway
 
     public function getChoosePage(Transaction $transaction)
     {
-        return view('gateways.dev.basket', ['transaction'=>$transaction]);
+        return view('gateways.dev.basket', ['transaction' => $transaction]);
     }
 
     public function requestPayment(Transaction $transaction)
@@ -37,11 +32,14 @@ class DevProvider implements PaymentGateway
         // TODO: Implement requestPayment() method.
     }
 
-    public function canBeUsed(Transaction $transaction):bool
+    public function canBeUsed(Transaction $transaction): bool
     {
-        if($transaction->service->isDevMode())
+        if ($transaction->service->isDevMode()) {
             return true;
-        else return false;
+        } else {
+            return false;
+        }
+
     }
 
     public function getHumanisedReport(Transaction $transaction)
