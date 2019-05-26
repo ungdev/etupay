@@ -26,4 +26,4 @@ Un site s'ajoute via la cli et permet d'obtenir le service_id et la clé api né
  - Christian d'Autume (christian@dautume.fr)
 
  ## Licence
-Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)  (https://creativecommons.org/licenses/by-nc-sa/4.0/)
+GNU General Public License v3.0
