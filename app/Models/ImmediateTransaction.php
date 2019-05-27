@@ -3,7 +3,6 @@
 
 namespace App\Models;
 
-use App\Classes\AtosRequest;
 class ImmediateTransaction extends Transaction
 {
     protected $type = 'checkout';
@@ -14,7 +13,11 @@ class ImmediateTransaction extends Transaction
         $this->attributes['type'] = 'PAYMENT';
         $this->attributes['capture_day'] = 0;
     }
-
+    /**
+     * Refactor, old function to get AtosParameter
+     *
+     * @return void
+     */
     public function getAtosParameter()
     {
         return [
@@ -28,5 +31,49 @@ class ImmediateTransaction extends Transaction
     {
         static::addGlobalScope(new TransactionScope('payment'));
         parent::boot();
+    }
+    /**
+     * Order a refund order based on amount order
+     *
+     * @param integer $amount
+     * @return boolean
+     */
+    public function doRefund(int $amount): bool
+    {
+        $amount = intval($amount);
+        if ($amount < 0 && amount <= $this->getSolde()) {
+            return false;
+        }
+
+        if ($this->step != 'PAID') {
+            return false;
+        }
+        
+        $refund_tr = new RefundTransaction();
+
+        if (!$this->parent) {
+            $refund_tr->parent = $this->id;
+        } else {
+            $refund_tr->parent = $this->parent;
+        }
+
+        $refund_tr->amount = $amount;
+        $refund_tr->save();
+
+        if($result = $this->getProvider()->doRefund($refund_tr))
+        {
+            $refund_tr->provider = $this->getProvider()->getName();
+
+            // TODO: refactoring
+            if (\is_array($result)) {
+                $refund_tr->bank_transaction_id = $result['transaction']['id'];
+                $refund_tr->data = json_encode($result);
+            }
+            $refund_tr->step = 'PAID';
+            $refund_tr->save();
+            return true;
+        }
+
+        return false;
     }
 }

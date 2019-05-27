@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Jobs\TransactionClientNotify;
 use App\Jobs\TransactionNotify;
-use App\PaymentProvider\PaymentGateway;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
@@ -23,6 +22,50 @@ class Transaction extends Model
         static::creating(function ($model) {
             $model->uuid = Uuid::uuid4()->toString();
         });
+    }
+
+    /**
+     * Order a refund order based on amount order
+     *
+     * @param integer $amount
+     * @return boolean
+     */
+    public function doRefund(int $amount): bool
+    {
+        return false;
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\Models\Transaction', 'parent', 'id');
+    }
+
+    public function parent()
+    {
+        return $this->hasOne('App\Models\Transaction', 'id', 'parent');
+    }
+
+    public function getSolde(): float
+    {
+        $tr = $this;
+        if($this->parent)
+        {
+            $tr = $this->parent;
+        }
+
+        $solde = $tr->amount;
+        foreach($tr->children as $child)
+        {
+            if($child instanceof ImmediateTransaction && $child->step == 'PAID')
+            {
+                $solde += $child->amount;
+            }
+            if($child instanceof RefundTransaction && $child->step == 'PAID')
+            {
+                $solde += $child->amount;
+            }
+        }
+        return $solde;
     }
 
     public function callbackAccepted()
@@ -76,29 +119,30 @@ class Transaction extends Model
         $this->firstname = (isset($data['firstname']) ? $data['firstname'] : null);
         $this->lastname = (isset($data['lastname']) ? $data['lastname'] : null);
 
-        if(isset($data['articles']) && is_array($data['articles']))
-        {
+        if (isset($data['articles']) && is_array($data['articles'])) {
             $articles = [];
             $total = 0;
-            foreach ($data['articles'] as $article)
-            {
+            foreach ($data['articles'] as $article) {
                 $article = (array) $article;
                 $articles[] = [
                     'name' => $article['name'],
                     'price' => intval($article['price']),
-                    'qty' => intval($article['quantity'])
+                    'qty' => intval($article['quantity']),
                 ];
                 $total += intval($article['price']) * intval($article['quantity']);
             }
 
-            if ($total != $this->attributes['amount'])
+            if ($total != $this->attributes['amount']) {
                 abort(400, 'Invalid total amount');
-            else
+            } else {
                 $this->articles = $articles;
-        } else
-            abort(400, 'Missing articles field.');
-    }
+            }
 
+        } else {
+            abort(400, 'Missing articles field.');
+        }
+
+    }
 
     public function callbackReturn()
     {
@@ -113,8 +157,7 @@ class Transaction extends Model
 
     public function newFromBuilder($attributes = [], $connection = null)
     {
-        switch ($attributes->type)
-        {
+        switch ($attributes->type) {
             case 'PAYMENT':
                 $model = new ImmediateTransaction([], true);
                 break;
@@ -145,18 +188,18 @@ class Transaction extends Model
     }
     public function checkExistence()
     {
-        if($this->attributes['id'])
+        if ($this->attributes['id']) {
             $this->exists = true;
+        }
+
     }
 
     public function getProvider()
     {
-        if(isset($this->attributes['provider']))
-        {
-            $provider =  config('payment.gateway')[$this->provider];
+        if (isset($this->attributes['provider'])) {
+            $provider = config('payment.gateway')[$this->provider];
             return new $provider;
         }
     }
-
 
 }
