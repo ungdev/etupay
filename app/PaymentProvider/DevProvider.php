@@ -7,14 +7,15 @@
 
 namespace App\PaymentProvider;
 
+use App\Models\RefundTransaction;
 use App\Models\Transaction;
 
 class DevProvider implements PaymentGateway
 {
-    public function doRefund($id)
+    public function doRefund(RefundTransaction $transaction)
     {
-        // TODO: Implement doRefund() method.
-        return false;
+        // Refund always successfull in dev mode
+        return true;
     }
 
     public function getName()

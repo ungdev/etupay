@@ -4,6 +4,7 @@ namespace App\PaymentProvider;
 
 use App\Models\AuthorisationTransaction;
 use App\Models\ImmediateTransaction;
+use App\Models\RefundTransaction;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -93,8 +94,9 @@ class PaylineProvider implements PaymentGateway
 
     }
 
-    public function doRefund($id)
+    public function doRefund(RefundTransaction $transaction)
     {
+        $id = $transaction->parent->bank_transaction_id;
         $tr = $this->getTransaction($id);
         if ($tr && $tr['result']['code'] == '00000') {
 
