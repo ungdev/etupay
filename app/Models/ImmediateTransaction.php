@@ -41,7 +41,7 @@ class ImmediateTransaction extends Transaction
     public function doRefund(int $amount): bool
     {
         $amount = intval($amount);
-        if ($amount < 0 && amount <= $this->getSolde()) {
+        if ($amount <= 0 || $amount > $this->getSolde()) {
             return false;
         }
 
@@ -60,17 +60,8 @@ class ImmediateTransaction extends Transaction
         $refund_tr->amount = $amount;
         $refund_tr->save();
 
-        if($result = $this->getProvider()->doRefund($refund_tr))
+        if($this->getProvider()->doRefund($refund_tr))
         {
-            $refund_tr->provider = $this->getProvider()->getName();
-
-            // TODO: refactoring
-            if (\is_array($result)) {
-                $refund_tr->bank_transaction_id = $result['transaction']['id'];
-                $refund_tr->data = json_encode($result);
-            }
-            $refund_tr->step = 'PAID';
-            $refund_tr->save();
             return true;
         }
 

@@ -62,7 +62,7 @@ class Transaction extends Model
             }
             if($child instanceof RefundTransaction && $child->step == 'PAID')
             {
-                $solde += $child->amount;
+                $solde -= $child->amount;
             }
         }
         return $solde;
@@ -86,6 +86,11 @@ class Transaction extends Model
         dispatch(new TransactionClientNotify($this));
     }
 
+    /**
+     * To remove
+     *
+     * @return void
+     */
     public function callbackRefunded()
     {
         $this->step = 'REFUNDED';
@@ -146,13 +151,21 @@ class Transaction extends Model
 
     public function callbackReturn()
     {
-        return [
+        $rtn = [
             'transaction_id' => $this->id,
             'type' => $this->getType(),
             'amount' => $this->amount,
             'service_data' => $this->service_data,
             'step' => $this->step,
         ];
+
+        if(is_object($this->parent))
+        {
+            $rtn['service_data'] = $this->parent->service_data;
+            $rtn['parent_transaction_id'] = $this->parent->id;
+        }
+
+        return $rtn;
     }
 
     public function newFromBuilder($attributes = [], $connection = null)

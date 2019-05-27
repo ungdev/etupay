@@ -9,6 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
+use App\Models\ImmediateTransaction;
+use App\Models\RefundTransaction;
 
 class TransactionNotify extends Job implements ShouldQueue
 {
@@ -46,16 +48,19 @@ class TransactionNotify extends Job implements ShouldQueue
         switch ($this->transaction->step)
         {
             case 'PAID':
-                $sujet = 'Confirmation de paiement, transaction n°'.$this->transaction->id;
-                $template = 'emails.paid';
+                if ($this->transaction instanceof ImmediateTransaction) {
+                    $sujet = 'Confirmation de paiement, transaction n°'.$this->transaction->id;
+                    $template = 'emails.paid';
+                } else if ($this->transaction instanceof RefundTransaction) {
+                    $sujet = 'Remboursement de votre transaction';
+                    $template = 'emails.refunded';
+                }
                 break;
 
             case 'AUTHORISATION':
                 break;
 
             case 'REFUNDED':
-                $sujet = 'Remboursement de votre transaction';
-                $template = 'emails.refunded';
                 break;
 
             case 'REFUSED':
