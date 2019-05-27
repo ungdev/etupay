@@ -13,7 +13,7 @@ class CreateParentTransaction extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('transactions', 'parent')) {
+        //if (!Schema::hasColumn('transactions', 'parent')) {
             Schema::table('transactions', function (Blueprint $table) {
                 $table->integer('parent')->unsigned()->nullable()->after('id');
                 $table->foreign('parent')->references('id')->on('transactions');
@@ -21,7 +21,7 @@ class CreateParentTransaction extends Migration
                 //TODO add refund transaction type
             });
             DB::statement("ALTER TABLE transactions CHANGE COLUMN `type` `type` ENUM('PAYMENT', 'AUTHORISATION', 'REFUND')");
-        }
+        //}
 
         //Migration script
 
