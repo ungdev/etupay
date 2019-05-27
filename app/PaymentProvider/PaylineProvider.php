@@ -96,8 +96,12 @@ class PaylineProvider implements PaymentGateway
 
     public function doRefund(RefundTransaction $transaction)
     {
-        $id = $transaction->parent->bank_transaction_id;
-        $tr = $this->getTransaction($id);
+        if(is_object($transaction->parent)) {
+            $id = $transaction->parent->bank_transaction_id;
+        } else {
+            $id = $transaction->parent()->first()->bank_transaction_id;
+        }
+        $tr = $this->getTransactionByPaylineId($id);
         if ($tr && $tr['result']['code'] == '00000') {
 
             $param = [];
@@ -110,20 +114,60 @@ class PaylineProvider implements PaymentGateway
             $param['sequenceNumber'] = null;
 
             $this->sdk->resetPrivateData();
-            $this->sdk->addPrivateData(['key' => 'linked_etupay_id', 'value' => $id]);
+            $this->sdk->addPrivateData(['key' => 'linked_etupay_id', 'value' => $transaction->id]);
             $param['comment'] = 'Remboursement automatisé';
 
             $return = $this->sdk->doRefund($param);
             if ($return['result']['code'] == '00000') {
+                $transaction->data = json_encode($return);
+                $transaction->provider = $this->getName();
+                $transaction->bank_transaction_id = $return['transaction']['id'];
+                $transaction->callbackAccepted();
                 return $return;
             } else {
-                Log::error("PaylineProvider - Refund - Transaction " . $id . " - " . $return['result']['code'] . ": " . $return['result']['longMessage']);
+                $transaction->callbackRefused();
+                Log::error("PaylineProvider - Refund - Transaction " . $transaction->id . " - " . $return['result']['code'] . ": " . $return['result']['longMessage']);
                 return false;
             }
         } else {
             return false;
         }
 
+    }
+
+    public function renewAuthorisation(AuthorisationTransaction $transaction)
+    {
+        $this->sdk->resetPrivateData();
+
+        $param = [];
+
+        $param['returnURL'] = url()->route('return.payline');
+        $param['cancelURL'] = url()->route('return.payline');
+
+        //URL::forceRootUrl('http://46d42550.ngrok.io');
+        $param['notificationURL'] = url()->route('callback.payline');
+        $param['securityMode'] = 'SSL';
+
+        $param['transactionID'] = $transaction->bank_transaction_id;
+        $param['payment']['amount'] = $transaction->amount;
+        $param['payment']['currency'] = 978;
+        $param['payment']['mode'] = 'CPT';
+
+        $this->sdk->addPrivateData(['key' => '3ds_nocheck', 'value' => 1]);
+        $param['payment']['action'] = 202;
+
+        $param['payment']['contractNumber'] = config('payment.payline.contract_number');
+        $param['contracts'] = [config('payment.payline.contract_number')];
+        $param['version'] = 19;
+
+        $this->sdk->addPrivateData(['key' => 'etupay_id', 'value' => $transaction->id]);
+        $return = $this->sdk->doReAuthorization($param);
+        if ($return['result']['code'] == '00000') {
+            return $return;
+        } else {
+            Log::error("PaylineProvider - Transaction " . $transaction->id . " - " . $return['result']['code'] . ": " . $return['result']['longMessage']);
+            return false;
+        }
     }
 
     public function processCallback(string $token): Transaction
@@ -285,6 +329,8 @@ class PaylineProvider implements PaymentGateway
             return "Transaction par carte bancaire n°" . $trs->transaction->id;
         } else if ($transaction instanceof AuthorisationTransaction && $transaction->step == 'PAID') {
             return "Authorisation bancaire n°" . $trs->authorization->number;
+        } else if ($transaction instanceof RefundTransaction && $transaction->step == 'PAID') {
+            return "Remboursement bancaire n°" . $trs->transaction->id;
         } else if ($transaction->step == 'REFUSED') {
             return "Echec de la transaction, raison: " . $trs->result->longMessage;
         }
