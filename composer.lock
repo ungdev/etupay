@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alsofronie/eloquent-uuid.git",
-                "reference": "7edc7310dddf1425817b91af829d102277300ff6"
+                "reference": "339cb57681bfa270c3860751b17a3e7c06014adf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alsofronie/eloquent-uuid/zipball/7edc7310dddf1425817b91af829d102277300ff6",
-                "reference": "7edc7310dddf1425817b91af829d102277300ff6",
+                "url": "https://api.github.com/repos/alsofronie/eloquent-uuid/zipball/339cb57681bfa270c3860751b17a3e7c06014adf",
+                "reference": "339cb57681bfa270c3860751b17a3e7c06014adf",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 }
             ],
             "description": "A Laravel Eloquent Model trait for using UUID's as primary keys",
-            "time": "2018-03-19T08:05:23+00:00"
+            "time": "2019-04-02T10:30:47+00:00"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -1036,16 +1036,16 @@
         },
         {
             "name": "monext/payline-sdk",
-            "version": "4.55.2",
+            "version": "4.55.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PaylineByMonext/payline-php-sdk.git",
-                "reference": "19bd51153add5d785c8dabfbf2d44f53cd7f75d8"
+                "reference": "2d0e1a700b70f129c09f4d118b4c717d17067189"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PaylineByMonext/payline-php-sdk/zipball/19bd51153add5d785c8dabfbf2d44f53cd7f75d8",
-                "reference": "19bd51153add5d785c8dabfbf2d44f53cd7f75d8",
+                "url": "https://api.github.com/repos/PaylineByMonext/payline-php-sdk/zipball/2d0e1a700b70f129c09f4d118b4c717d17067189",
+                "reference": "2d0e1a700b70f129c09f4d118b4c717d17067189",
                 "shasum": ""
             },
             "require": {
@@ -1078,7 +1078,7 @@
                 "Payline",
                 "payment"
             ],
-            "time": "2019-01-02T16:30:15+00:00"
+            "time": "2019-05-09T08:36:32+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3549,6 +3549,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
