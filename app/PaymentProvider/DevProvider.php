@@ -15,6 +15,9 @@ class DevProvider implements PaymentGateway
     public function doRefund(RefundTransaction $transaction)
     {
         // Refund always successfull in dev mode
+        $transaction->provider = $this->getName();
+        $transaction->step = 'PAID';
+        $transaction->save();
         return true;
     }
 
