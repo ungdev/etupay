@@ -192,8 +192,6 @@ return [
 
         App\Providers\PaymentLoaderProvider::class,
 
-        \Fideloper\Proxy\TrustedProxyServiceProvider::class,
-
     ],
 
     /*
