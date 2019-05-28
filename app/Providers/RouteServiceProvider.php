@@ -23,9 +23,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
+        Route::bind('InitialisedTransaction', function ($id) {
+            return \App\Models\Transaction::where('id', $id)->where('step', 'INITIALISED')->first() ?? abort(404);
+
+        });
     }
 
     /**
