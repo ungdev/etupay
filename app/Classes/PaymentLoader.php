@@ -5,7 +5,6 @@ namespace App\Classes;
 use App\Models\AuthorisationTransaction;
 use App\Models\ImmediateTransaction;
 use App\Models\Service;
-use App\Models\Transaction;
 use Illuminate\Encryption\Encrypter;
 
 #Facade
@@ -14,11 +13,11 @@ class PaymentLoader
 
     public function parseData($data)
     {
-        if(!isset($data->type))
+        if (!isset($data->type)) {
             throw new \Exception('Wrong payload form');
+        }
 
-        switch ($data->type)
-        {
+        switch ($data->type) {
             case 'checkout':
                 $transaction = new ImmediateTransaction();
                 $transaction->bind($data);
@@ -39,7 +38,7 @@ class PaymentLoader
 
         $data = json_decode($this->decrypt($key, $payload));
         $transaction = $this->parseData($data);
-        $transaction->service_id= $service->id;
+        $transaction->service_id = $service->id;
 
         return $transaction;
     }
@@ -52,10 +51,12 @@ class PaymentLoader
     public function decrypt($key, $payload)
     {
         $crypt = new Encrypter(base64_decode($key), 'AES-256-CBC');
-        if($this->checkKey($key))
+        if ($this->checkKey($key)) {
             return $crypt->decrypt($payload);
-        else
+        } else {
             throw new \Exception('Cannot decrypt the payload');
+        }
+
     }
 
     public function encrypt($key, array $data)
@@ -69,6 +70,5 @@ class PaymentLoader
         $crypt = new Encrypter(base64_decode($key), 'AES-256-CBC');
         return $crypt->supported(base64_decode($key), 'AES-256-CBC');
     }
-
 
 }

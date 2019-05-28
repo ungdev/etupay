@@ -2,16 +2,14 @@
 
 namespace App\Jobs;
 
-
+use App\Facades\PaymentLoader;
 use App\Jobs\Job;
 use App\Models\Transaction;
 use GuzzleHttp\Client;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use App\Facades\PaymentLoader;
-use App\Models\RefundTransaction;
 
 class TransactionClientNotify extends Job implements ShouldQueue
 {
@@ -36,16 +34,19 @@ class TransactionClientNotify extends Job implements ShouldQueue
      */
     public function handle(Transaction $transaction)
     {
-            $transaction = $this->transaction;
-            // On fait la transaction
-            $client = new Client();
-            $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
-            $res = $client->request('POST', $transaction->service->callback_url . '?payload=' . $payload, [
-                'json' => ['payload' => $payload],
-                'verify' => false,
-            ]);
-            if ($res->getStatusCode() != 200)
-                throw new \Exception($res->getStatusCode() . ' error during #' . $transaction->id . ' callback');
-            else Log::info('Callback #' . $transaction->id . ' success');
+        $transaction = $this->transaction;
+        // On fait la transaction
+        $client = new Client();
+        $payload = PaymentLoader::encryptFromService($transaction->service, $transaction->callbackReturn());
+        $res = $client->request('POST', $transaction->service->callback_url . '?payload=' . $payload, [
+            'json' => ['payload' => $payload],
+            'verify' => false,
+        ]);
+        if ($res->getStatusCode() != 200) {
+            throw new \Exception($res->getStatusCode() . ' error during #' . $transaction->id . ' callback');
+        } else {
+            Log::info('Callback #' . $transaction->id . ' success');
+        }
+
     }
 }
