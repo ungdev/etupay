@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentRequest;
 use App\Models\Service;
-use Illuminate\Http\Request;
-
 
 class TransactionRequest extends Controller
 {
@@ -23,9 +21,8 @@ class TransactionRequest extends Controller
 
     public function incomming(PaymentRequest $request)
     {
-         $request->Transaction->save();
+        $request->Transaction->save();
         return redirect()->route('userFrontend.uuid.choose', ['uuid' => $request->Transaction->uuid]);
     }
-
 
 }
