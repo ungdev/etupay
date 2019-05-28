@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\PaymentProvider\AtosProvider;
 use App\PaymentProvider\PaylineProvider;
-use App\PaymentProvider\PaypalProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Facades\PaymentLoader;
 
 class CallbackController extends Controller
 {
@@ -28,9 +26,7 @@ class CallbackController extends Controller
         Log::info('Payline callback');
         if ($request->input('notificationType') == 'WEBTRS' && $request->has('token')) {
             $provider->processCallback($request->input('token'));
-        }
-        else
-        {
+        } else {
             $provider->processCallback($request->input('paylinetoken'));
         }
 

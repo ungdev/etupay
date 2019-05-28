@@ -3,6 +3,7 @@
 namespace App\PaymentProvider;
 
 use App\Models\AuthorisationTransaction;
+use App\Models\RefundTransaction;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -33,7 +34,7 @@ class PaypalProvider implements PaymentGateway
         return true;
     }
 
-    public function doRefund($id)
+    public function doRefund(RefundTransaction $transaction)
     {
         // TODO: Implement doRefund() method.
         return false;
