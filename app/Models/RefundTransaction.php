@@ -8,11 +8,11 @@ class RefundTransaction extends Transaction
 {
     protected $type = 'refund';
 
-    public function bind($data)
+    public function __construct()
     {
-        parent::bind($data);
         $this->attributes['type'] = 'REFUND';
         $this->attributes['capture_day'] = 29;
+        parent::__construct();
     }
 
     protected static function boot()

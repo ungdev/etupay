@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Fundation;
-use App\Models\Transaction;
 use Illuminate\Console\Command;
 
 class CreateFundation extends Command

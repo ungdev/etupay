@@ -9,13 +9,14 @@ namespace App\PaymentProvider;
 
 use App\Classes\AtosRequest;
 use App\Models\ImmediateTransaction;
+use App\Models\RefundTransaction;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class AtosProvider implements PaymentGateway
 {
-    public function doRefund($id)
+    public function doRefund(RefundTransaction $transaction)
     {
         // TODO: Implement doRefund() method.
         return false;
