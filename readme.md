@@ -20,7 +20,7 @@ Un site s'ajoute via la cli et permet d'obtenir le service_id et la clé api né
 - NodeJS: https://github.com/ungdev/node-etupay
 
 ## Techno
- - PHP Framework: Laravel 5.2
+ - PHP Framework: Laravel 5.8
 
  ## Crédits / Contact
  - Christian d'Autume (christian@dautume.fr)

@@ -3,6 +3,9 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
+use App\Mail\paidTransaction;
+use App\Mail\refundedTransaction;
+use App\Mail\refusedTransaction;
 use App\Models\Transaction;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,9 +38,7 @@ class TransactionNotify extends Job implements ShouldQueue
      */
     public function handle(Transaction $transaction)
     {
-        //Notify Serveur
         $this->sendMailNotification();
-
     }
 
     public function sendMailNotification()
@@ -50,10 +51,10 @@ class TransactionNotify extends Job implements ShouldQueue
             case 'PAID':
                 if ($this->transaction instanceof ImmediateTransaction) {
                     $sujet = 'Confirmation de paiement, transaction n°'.$this->transaction->id;
-                    $template = 'emails.paid';
+                    Mail::to($this->transaction->client_mail)->queue(new paidTransaction($this->transaction, $sujet));
                 } else if ($this->transaction instanceof RefundTransaction) {
                     $sujet = 'Remboursement de votre transaction';
-                    $template = 'emails.refunded';
+                    Mail::to($this->transaction->client_mail)->queue(new refundedTransaction($this->transaction, $sujet));
                 }
                 break;
 
@@ -65,23 +66,14 @@ class TransactionNotify extends Job implements ShouldQueue
 
             case 'REFUSED':
                 $sujet = 'Échec de la transaction';
-                $template = 'emails.refused';
+                Mail::to($this->transaction->client_mail)->queue(new refusedTransaction($this->transaction, $sujet));
                 break;
 
             case 'CANCELED':
                 $sujet = 'Abandon de la transaction';
-                $template = 'emails.refused';
+                Mail::to($this->transaction->client_mail)->queue(new refusedTransaction($this->transaction, $sujet));
                 break;
         }
 
-        if(isset($template) && view()->exists($template)) {
-            $transaction = $this->transaction;
-
-            Mail::queue($template, ['transaction' => $this->transaction, 'sujet' => $sujet], function ($m) use ($transaction, $sujet) {
-                $m->from('etupay@utt.fr', 'Etupay - BDE UTT');
-                $m->subject($sujet);
-                $m->to($transaction->client_mail);
-            });
-        }
     }
 }
