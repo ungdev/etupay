@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Config;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -37,6 +38,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if ($this->shouldReport($exception)) {
+            $this->sendErrorToSlack($exception);
+        }
         parent::report($exception);
     }
 
@@ -60,6 +64,39 @@ class Handler extends ExceptionHandler
             return response()->view("errors.default", ['e' => $e]);
         } else {
             return response()->view("errors.{$status}", ['exception' => $e], $status, $e->getHeaders());
+        }
+    }
+
+    public function sendErrorToSlack(Exception $e)
+    {
+        $url = Config::get('services.slack.exception_webhook');
+        if ($url) {
+            $parsedUrl = parse_url($url);
+
+            $this->client = new \GuzzleHttp\Client([
+                'base_uri' => $parsedUrl['scheme'] . '://' . $parsedUrl['host'],
+            ]);
+
+            $payload = json_encode(
+                [
+                    'text' => get_class($e) . ': ' . $e->getMessage() . ' (' . $e->getCode() . ')',
+                    'username' => 'Exception EtuPAY',
+                    'icon_emoji' => ':rotating_light:',
+                    'attachments' => [
+                        [
+                            'title' => 'File',
+                            'text' => $e->getFile() . ':' . $e->getLine(),
+                            'color' => '#d80012',
+                        ],
+                        [
+                            'title' => 'Trace',
+                            'text' => $e->getTraceAsString(),
+                            'color' => '#d80012',
+                        ],
+                    ],
+                ]);
+            $response = $this->client->post($parsedUrl['path'], ['body' => $payload]);
+            return $response;
         }
     }
 }
