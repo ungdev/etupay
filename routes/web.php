@@ -11,9 +11,7 @@
 |
  */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
+Route::get('/', ['as' => 'home', 'uses' => 'PageController@index']);
 
 // CallBack ATOS
 Route::group(['middleware' => 'bank'], function () {
@@ -45,6 +43,5 @@ Route::group([], function () {
     Route::get('/initiate', ['as' => 'payment.request', 'uses' => 'TransactionRequest@incomming']);
     Route::post('/initiate', ['as' => 'payment.request', 'uses' => 'TransactionRequest@incomming']);
 });
-
 
 //Route::pattern('uuid', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
