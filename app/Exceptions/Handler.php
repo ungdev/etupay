@@ -2,25 +2,30 @@
 
 namespace App\Exceptions;
 
+use Config;
 use Exception;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that should not be reported.
+     * A list of the exception types that are not reported.
      *
      * @var array
      */
     protected $dontReport = [
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
+        //
+    ];
+
+    /**
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array
+     */
+    protected $dontFlash = [
+        'password',
+        'password_confirmation',
     ];
 
     /**
@@ -31,31 +36,66 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $e
      * @return void
      */
-    public function report(Exception $e)
+    public function report(Exception $exception)
     {
-        parent::report($e);
+        if ($this->shouldReport($exception)) {
+            $this->sendErrorToSlack($exception);
+        }
+        parent::report($exception);
     }
 
     /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
+     * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Exception $exception)
     {
-        return parent::render($request, $e);
+        return parent::render($request, $exception);
     }
 
-    protected function renderHttpException(HttpException $e)
+    protected function renderHttpException(HttpExceptionInterface $e)
     {
         $status = $e->getStatusCode();
-
         if (!view()->exists("errors.{$status}")) {
             return response()->view("errors.default", ['e' => $e]);
         } else {
             return response()->view("errors.{$status}", ['exception' => $e], $status, $e->getHeaders());
+        }
+    }
+
+    public function sendErrorToSlack(Exception $e)
+    {
+        $url = Config::get('services.slack.exception_webhook');
+        if ($url) {
+            $parsedUrl = parse_url($url);
+
+            $this->client = new \GuzzleHttp\Client([
+                'base_uri' => $parsedUrl['scheme'] . '://' . $parsedUrl['host'],
+            ]);
+
+            $payload = json_encode(
+                [
+                    'text' => get_class($e) . ': ' . $e->getMessage() . ' (' . $e->getCode() . ')',
+                    'username' => 'Exception EtuPAY',
+                    'icon_emoji' => ':rotating_light:',
+                    'attachments' => [
+                        [
+                            'title' => 'File',
+                            'text' => $e->getFile() . ':' . $e->getLine(),
+                            'color' => '#d80012',
+                        ],
+                        [
+                            'title' => 'Trace',
+                            'text' => $e->getTraceAsString(),
+                            'color' => '#d80012',
+                        ],
+                    ],
+                ]);
+            $response = $this->client->post($parsedUrl['path'], ['body' => $payload]);
+            return $response;
         }
     }
 }
