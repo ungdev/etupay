@@ -59,11 +59,14 @@ class Handler extends ExceptionHandler
     protected function renderHttpException(HttpExceptionInterface $e)
     {
         $status = $e->getStatusCode();
+        return response()->view("errors.default", ['e' => $e]);
+        /** 
         if (!view()->exists("errors.{$status}")) {
             return response()->view("errors.default", ['e' => $e]);
         } else {
             return response()->view("errors.{$status}", ['exception' => $e], $status, $e->getHeaders());
         }
+        */
     }
 
     public function sendErrorToSlack(Exception $e)

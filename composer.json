@@ -9,15 +9,17 @@
     "type": "project",
     "require": {
         "php": "^7.1.3",
+        "ext-soap": "*",
+        "alsofronie/eloquent-uuid": "dev-master",
         "fideloper/proxy": "^4.0",
+        "flugger/laravel-responder": "^3.0",
+        "guzzlehttp/guzzle": "~6.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "guzzlehttp/guzzle": "~6.0",
-        "paypal/rest-api-sdk-php": "*",
-        "alsofronie/eloquent-uuid": "dev-master",
-        "ramsey/uuid": "^3.7",
         "monext/payline-sdk": "4.*",
-        "ext-soap": "*"
+        "mpociot/laravel-apidoc-generator": "^3.8",
+        "paypal/rest-api-sdk-php": "*",
+        "ramsey/uuid": "^3.7"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -12,4 +10,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::prefix('v1')->group(function(){
+    Route::prefix('transaction')->group(function(){
+        Route::put('/{InitialisedTransactionUUID}/selfUpdate', ['as' => 'api.v1.transaction.selfUpdate', 'uses' => 'Api\TransactionController@selfUpdate']);
+    });
+});

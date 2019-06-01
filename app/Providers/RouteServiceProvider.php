@@ -28,6 +28,10 @@ class RouteServiceProvider extends ServiceProvider
             return \App\Models\Transaction::where('id', $id)->where('step', 'INITIALISED')->first() ?? abort(404);
 
         });
+        Route::bind('InitialisedTransactionUUID', function ($uuid) {
+            return \App\Models\Transaction::where('uuid', $uuid)->where('step', 'INITIALISED')->first() ?? abort(404);
+
+        });
     }
 
     /**

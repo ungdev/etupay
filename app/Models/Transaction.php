@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Jobs\TransactionClientNotify;
 use App\Jobs\TransactionNotify;
+use App\Transformers\TransactionTransformer;
+use Flugg\Responder\Contracts\Transformable;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class Transaction extends Model
+class Transaction extends Model implements Transformable
 {
     protected $table = 'transactions';
     protected $type = 'default';
@@ -48,20 +50,16 @@ class Transaction extends Model
     public function getSolde(): float
     {
         $tr = $this;
-        if($this->parent)
-        {
+        if ($this->parent) {
             $tr = $this->parent;
         }
 
         $solde = $tr->amount;
-        foreach($tr->children as $child)
-        {
-            if($child instanceof ImmediateTransaction && $child->step == 'PAID')
-            {
+        foreach ($tr->children as $child) {
+            if ($child instanceof ImmediateTransaction && $child->step == 'PAID') {
                 $solde += $child->amount;
             }
-            if($child instanceof RefundTransaction && $child->step == 'PAID')
-            {
+            if ($child instanceof RefundTransaction && $child->step == 'PAID') {
                 $solde -= $child->amount;
             }
         }
@@ -159,8 +157,7 @@ class Transaction extends Model
             'step' => $this->step,
         ];
 
-        if(is_object($this->parent))
-        {
+        if (is_object($this->parent)) {
             $rtn['service_data'] = $this->parent->service_data;
             $rtn['parent_transaction_id'] = $this->parent->id;
         }
@@ -213,6 +210,16 @@ class Transaction extends Model
             $provider = config('payment.gateway')[$this->provider];
             return new $provider;
         }
+    }
+
+    /**
+     * Get a transformer for the class.
+     *
+     * @return \Flugg\Responder\Transformers\Transformer|string|callable
+     */
+    public function transformer()
+    {
+        return TransactionTransformer::class;
     }
 
 }

@@ -7,9 +7,9 @@ $(document).ready(function() {
     $('form').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
-            url: $(this).attr('action'),
+            url: $('form').attr('action'),
             method: 'POST',
-            data: $(this).serialize(),
+            data: $('form').serialize(),
         }).done(function(res) {
             noty({ type: res.status, text: res.message });
         });
