@@ -6,6 +6,7 @@ use App\Models\Service;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Telescope\TelescopeServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,7 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if (!App::environment('local')) {
+        if ($this->app->isLocal()) {
+            $this->app->register(TelescopeServiceProvider::class);
+        } else {
             URL::forceScheme('https');
         }
     }
