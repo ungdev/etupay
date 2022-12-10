@@ -10,6 +10,12 @@ Un site s'ajoute via la cli et permet d'obtenir le service_id et la clé api né
 1 - Création d'une fondation (ex: association)
 2 - Création d'un service 
 
+## Déploiement d'Etupay
+
+Afin de déployer Etupay, il est nécessaire de lancer deux conteneur Etupay :
+- le premier conteneur sera celui utilisé pour recevoir les requêtes des clients (site web souhaitant renvoyer leur utilisateur vers Etupay afin de procéder à une transaction), il devra bénéficier d'un accès à la base de donnée d'Etupay, et le serveur Apache devra y être lancé
+- le second conteneur sera celui chargé de renvoyer une réponse aux clients, ainsi, il devra avoir accès à la base de données de Etupay, et la commande suivante `./artisan queue:work --tries=30 --delay=30` devra être exécuté au lancement du conteneur. Cette commande permet au conteneur d'exécuter les scripts `App/Job` renseignés dans la base de données d'Etupay.
+
 ## Provider bancaire implémenté
 - Atos (LCL etc ...)
 - Payline
